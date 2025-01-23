@@ -1,0 +1,18 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    tmpDir: tmp
+
+    paths:
+        - app
+
+    # The level 9 is the highest level
+    level: 9
+
+    # excludePaths:
+        # -
+
+    # ignoreErrors:
+        # -
+
