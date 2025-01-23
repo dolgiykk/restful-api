@@ -5,11 +5,15 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libpng-dev \
     libzip-dev \
-    zip unzip \
+    zip \
+    unzip \
     bash \
     git \
-    zip \
-    curl
+    curl \
+    nodejs \
+    npm \
+    nano \
+    vim
 
 RUN apt-get clean &&  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

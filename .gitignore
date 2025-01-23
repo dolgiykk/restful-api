@@ -2,4 +2,5 @@
 /tmp
 .env
 /.idea
+/node_modules
 .php-cs-fixer.cache

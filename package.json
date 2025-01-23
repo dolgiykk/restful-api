@@ -3,15 +3,23 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "prepare": "husky install"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
+        "husky": "^8.0.0",
         "laravel-vite-plugin": "^1.0",
+        "lint-staged": "^15.4.1",
         "postcss": "^8.4.47",
         "tailwindcss": "^3.4.13",
         "vite": "^6.0"
+    },
+    "lint-staged": {
+        "*.php": [
+            "php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+        ]
     }
 }
