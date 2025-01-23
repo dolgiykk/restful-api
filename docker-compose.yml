@@ -1,0 +1,45 @@
+services:
+  app:
+    image: php:8.3-fpm
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    container_name: restfulapi-app
+    volumes:
+      - ./:/var/www
+    networks:
+      - restfulapi-network
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    container_name: restfulapi-nginx
+    volumes:
+      - ./:/var/www
+      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    networks:
+      - restfulapi-network
+
+  db:
+    image: postgres:15
+    container_name: restfulapi-db
+    restart: always
+    volumes:
+      - ./tmp/db:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+    ports:
+      - "5432:5432"
+    networks:
+      - restfulapi-network
+
+networks:
+  restfulapi-network:
+    driver: bridge
