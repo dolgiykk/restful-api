@@ -31,6 +31,7 @@ services:
     restart: always
     volumes:
       - ./tmp/db:/var/lib/postgresql
+      - pg_data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: '${DB_DATABASE}'
       POSTGRES_USER: '${DB_USERNAME}'
@@ -43,3 +44,7 @@ services:
 networks:
   restfulapi-network:
     driver: bridge
+
+volumes:
+    pg_data:
+        driver: local
