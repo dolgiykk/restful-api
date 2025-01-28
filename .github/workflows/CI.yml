@@ -20,22 +20,18 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: ${{ secrets.TEST_DB_USERNAME }}
-          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.TEST_DB_DATABASE }}
-        ports:
-          - 5432:5432
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
+
+      - name: Run PHP-CS-Fixer
+        run: composer php-cs-fixer
+
+      - name: Run PHPStan
+        run: composer phpstan
 
       - name: Clear config cache
         run: php artisan config:clear
