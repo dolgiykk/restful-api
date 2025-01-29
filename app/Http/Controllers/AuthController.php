@@ -23,11 +23,11 @@ class AuthController extends Controller
         }
 
         /** @var string $password */
-        $password = $request['password'];
+        $password = $request->input('password');
 
         $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
             'password' => Hash::make($password),
         ]);
 
@@ -45,13 +45,16 @@ class AuthController extends Controller
             return response()->json(['errors' => $e->errors()], $e->status);
         }
 
-        $user = User::where('email', $request['email'])->first();
+        $user = User::where('email', $request->input('email'))->first();
 
         if (! $user) {
             return response()->json(['message' => 'User not found.'], 401);
         }
 
-        if (! Hash::check($request['password'], $user->password)) {
+        /** @var string $password */
+        $password = $request->input('password');
+
+        if (! Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Wrong password.'], 401);
         }
 

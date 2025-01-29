@@ -22,7 +22,7 @@ class AuthControllerTest extends TestCase
             'password' => 'password123',
         ];
 
-        $response = $this->postJson('/api/register', $payload);
+        $response = $this->postJson('/api/v1/register', $payload);
 
         $response->assertStatus(201)
             ->assertJson(['message' => 'User registered successfully.']);
@@ -43,7 +43,7 @@ class AuthControllerTest extends TestCase
             'password' => 'short',
         ];
 
-        $response = $this->postJson('/api/register', $payload);
+        $response = $this->postJson('/api/v1/register', $payload);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'email', 'password']);
@@ -62,7 +62,7 @@ class AuthControllerTest extends TestCase
             'password' => 'password123',
         ];
 
-        $response = $this->postJson('/api/register', $payload);
+        $response = $this->postJson('/api/v1/register', $payload);
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
     }
@@ -83,7 +83,7 @@ class AuthControllerTest extends TestCase
             'password' => 'password123',
         ];
 
-        $response = $this->postJson('/api/login', $payload);
+        $response = $this->postJson('/api/v1/login', $payload);
         $response->assertStatus(200)
             ->assertJsonStructure(['token']);
     }
@@ -104,7 +104,7 @@ class AuthControllerTest extends TestCase
             'password' => 'wrong-password',
         ];
 
-        $response = $this->postJson('/api/login', $payload);
+        $response = $this->postJson('/api/v1/login', $payload);
         $response->assertStatus(401)
             ->assertJson(['message' => 'Wrong password.']);
     }
@@ -125,14 +125,14 @@ class AuthControllerTest extends TestCase
             'password' => 'password123',
         ];
 
-        $response = $this->postJson('/api/login', $payload);
+        $response = $this->postJson('/api/v1/login', $payload);
         $response->assertStatus(401)
             ->assertJson(['message' => 'User not found.']);
     }
 
     public function test_login_with_invalid_data(): void
     {
-        $response = $this->postJson('/api/login', []);
+        $response = $this->postJson('/api/v1/login', []);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email', 'password']);
