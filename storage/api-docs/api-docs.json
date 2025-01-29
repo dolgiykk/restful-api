@@ -1,0 +1,152 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Auth service API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/": {},
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register user",
+                "operationId": "26ac06b496123d055b26a788165924bb",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Some Name"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "some@email.ru"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "example": "password123"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registered successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email has already been taken."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login via email",
+                "operationId": "3e5fe318fe58355689b1608ed9f5430b",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "email": {
+                                                "type": "string",
+                                                "example": "some@email.ru"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "example": "password123"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User successfully authorized.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "5|EtCJlDMEjmuP7VlQWRJt5iovPD8vxIMBr4BV3jJnb9a2a643"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Wrong credentials.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        }
+    ]
+}
