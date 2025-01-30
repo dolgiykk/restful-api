@@ -10,11 +10,15 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function register(Request $request): JsonResponse
     {
         try {
             $request->validate([
-                'name' => 'string|required',
+                'login' => 'string|required',
                 'email' => 'string|required|email|unique:users',
                 'password' => 'string|required|min:8',
             ]);
@@ -26,7 +30,7 @@ class AuthController extends Controller
         $password = $request->input('password');
 
         $user = User::create([
-            'name' => $request->input('name'),
+            'login' => $request->input('login'),
             'email' => $request->input('email'),
             'password' => Hash::make($password),
         ]);
@@ -34,6 +38,10 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully.'], 201);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function login(Request $request): JsonResponse
     {
         try {
