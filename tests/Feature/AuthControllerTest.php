@@ -17,7 +17,7 @@ class AuthControllerTest extends TestCase
     public function test_register_successfully(): void
     {
         $payload = [
-            'name' => 'Test User',
+            'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => 'password123',
         ];
@@ -38,7 +38,7 @@ class AuthControllerTest extends TestCase
     public function test_register_with_invalid_data(): void
     {
         $payload = [
-            'name' => '',
+            'login' => '',
             'email' => 'invalid-email',
             'password' => 'short',
         ];
@@ -46,7 +46,7 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/v1/register', $payload);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['name', 'email', 'password']);
+            ->assertJsonValidationErrors(['login', 'email', 'password']);
     }
 
     /**
@@ -57,7 +57,7 @@ class AuthControllerTest extends TestCase
         User::factory()->create(['email' => 'test@test.com']);
 
         $payload = [
-            'name' => 'Test User',
+            'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => 'password123',
         ];
@@ -73,7 +73,7 @@ class AuthControllerTest extends TestCase
     public function test_login_successfully(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
+            'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => Hash::make('password123'),
         ]);
@@ -94,7 +94,7 @@ class AuthControllerTest extends TestCase
     public function test_login_with_wrong_password(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
+            'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => Hash::make('password123'),
         ]);
@@ -115,7 +115,7 @@ class AuthControllerTest extends TestCase
     public function test_login_with_nonexistent_user(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
+            'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => Hash::make('password123'),
         ]);
@@ -130,6 +130,9 @@ class AuthControllerTest extends TestCase
             ->assertJson(['message' => 'User not found.']);
     }
 
+    /**
+     * @return void
+     */
     public function test_login_with_invalid_data(): void
     {
         $response = $this->postJson('/api/v1/login', []);
