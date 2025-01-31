@@ -17,25 +17,21 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "allOf": [
-                                    {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string",
-                                                "example": "Some Name"
-                                            },
-                                            "email": {
-                                                "type": "string",
-                                                "example": "some@email.ru"
-                                            },
-                                            "password": {
-                                                "type": "string",
-                                                "example": "password123"
-                                            }
-                                        },
-                                        "type": "object"
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "Some Name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "some@email.ru"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
                                     }
-                                ]
+                                },
+                                "type": "object"
                             }
                         }
                     }
@@ -81,27 +77,23 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Login via email",
+                "summary": "Login via login",
                 "operationId": "3e5fe318fe58355689b1608ed9f5430b",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "allOf": [
-                                    {
-                                        "properties": {
-                                            "email": {
-                                                "type": "string",
-                                                "example": "some@email.ru"
-                                            },
-                                            "password": {
-                                                "type": "string",
-                                                "example": "password123"
-                                            }
-                                        },
-                                        "type": "object"
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "login"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
                                     }
-                                ]
+                                },
+                                "type": "object"
                             }
                         }
                     }
@@ -140,6 +132,54 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "operationId": "dc8632a856f454a9726cb289b0ad845b",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/users": {
@@ -381,5 +421,15 @@
             "name": "User",
             "description": "User"
         }
-    ]
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Enter token as: Bearer {your-token}"
+            }
+        }
+    }
 }

@@ -79,7 +79,7 @@ class AuthControllerTest extends TestCase
         ]);
 
         $payload = [
-            'email' => 'test@test.com',
+            'login' => 'TestUser',
             'password' => 'password123',
         ];
 
@@ -100,7 +100,7 @@ class AuthControllerTest extends TestCase
         ]);
 
         $payload = [
-            'email' => 'test@test.com',
+            'login' => 'TestUser',
             'password' => 'wrong-password',
         ];
 
@@ -121,7 +121,7 @@ class AuthControllerTest extends TestCase
         ]);
 
         $payload = [
-            'email' => 'nonexistent@test.com',
+            'login' => 'nonexistentLogin',
             'password' => 'password123',
         ];
 
@@ -138,6 +138,29 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/v1/login', []);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email', 'password']);
+            ->assertJsonValidationErrors(['login', 'password']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_logout_successfully(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'sanctum');
+
+        $response = $this->postJson('/api/v1/logout');
+
+        $response->assertStatus(200)
+            ->assertJson(['message' => 'Logged out successfully.']);
+    }
+
+    public function test_logout_without_authentication(): void
+    {
+        $response = $this->postJson('/api/v1/logout');
+
+        $response->assertStatus(401)
+            ->assertJson(['message' => 'Unauthenticated.']);
     }
 }

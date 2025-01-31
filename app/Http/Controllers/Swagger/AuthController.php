@@ -11,13 +11,10 @@ use App\Http\Controllers\Controller;
  *     tags={"Auth"},
  *     @OA\RequestBody(
  *         @OA\JsonContent(
- *             allOf={
- *                 @OA\Schema(
- *                     @OA\Property(property="name", type="string", example="Some Name"),
- *                     @OA\Property(property="email", type="string", example="some@email.ru"),
- *                     @OA\Property(property="password", type="string", example="password123"),
- *                 )
- *             }
+ *             type="object",
+ *             @OA\Property(property="login", type="string", example="SomeName"),
+ *             @OA\Property(property="email", type="string", example="some@email.ru"),
+ *             @OA\Property(property="password", type="string", example="password123"),
  *         )
  *     ),
  *     @OA\Response(
@@ -28,42 +25,59 @@ use App\Http\Controllers\Controller;
  *         )
  *     ),
  *     @OA\Response(
- *          response=422,
- *          description="Validation error.",
- *          @OA\JsonContent(
- *              @OA\Property(property="message", type="string", example="The email has already been taken.")
- *          )
- *      ),
+ *         response=422,
+ *         description="Validation error.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="The email has already been taken.")
+ *         )
+ *     ),
  * ),
  * @OA\Post(
- *      path="/api/v1/login",
- *      summary="Login via email",
- *      tags={"Auth"},
- *      @OA\RequestBody(
- *          @OA\JsonContent(
- *              allOf={
- *                  @OA\Schema(
- *                      @OA\Property(property="email", type="string", example="some@email.ru"),
- *                      @OA\Property(property="password", type="string", example="password123"),
- *                  )
- *              }
- *          )
- *      ),
- *      @OA\Response(
- *          response=200,
- *          description="User successfully authorized.",
- *          @OA\JsonContent(
- *              @OA\Property(property="token", type="string", example="5|EtCJlDMEjmuP7VlQWRJt5iovPD8vxIMBr4BV3jJnb9a2a643")
- *          )
- *      ),
- *      @OA\Response(
- *          response=401,
- *          description="Wrong credentials.",
- *          @OA\JsonContent(
- *              @OA\Property(property="message", type="string", example="User not found.")
- *          )
- *      ),
- *  ),
+ *     path="/api/v1/login",
+ *     summary="Login via login",
+ *     tags={"Auth"},
+ *     @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="login", type="string", example="SomeName"),
+ *             @OA\Property(property="password", type="string", example="password123")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User successfully authorized.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="token", type="string", example="5|EtCJlDMEjmuP7VlQWRJt5iovPD8vxIMBr4BV3jJnb9a2a643")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Wrong credentials.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="User not found.")
+ *         )
+ *     )
+ * ),
+ * @OA\Post(
+ *     path="/api/v1/logout",
+ *     summary="Logout",
+ *     tags={"Auth"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Logged out successfully.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Logged out successfully.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthenticated.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+ *         )
+ *     )
+ * )
  */
 class AuthController extends Controller
 {
