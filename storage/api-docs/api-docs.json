@@ -20,7 +20,7 @@
                                 "properties": {
                                     "login": {
                                         "type": "string",
-                                        "example": "Some Name"
+                                        "example": "SomeName"
                                     },
                                     "email": {
                                         "type": "string",
@@ -86,7 +86,7 @@
                                 "properties": {
                                     "login": {
                                         "type": "string",
-                                        "example": "login"
+                                        "example": "SomeName"
                                     },
                                     "password": {
                                         "type": "string",
@@ -180,6 +180,88 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/api/v1/change-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Change password",
+                "operationId": "9438915ceeae63776cea5fe8652e12d2",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "SomeName"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "example": "new_password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Change password and drop all sessions.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Password changed successfully. All sessions was closed."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Old and new passwords matched.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Old and new passwords matched."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users": {

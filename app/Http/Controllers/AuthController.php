@@ -81,4 +81,40 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out successfully.'], 200);
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $auth = $this->login($request);
+
+        if ($auth->status() !== 200) {
+            return response()->json(['message' => 'Incorrect credentials.'], 401);
+        }
+
+        try {
+            $request->validate([
+                'new_password' => 'string|required|min:8',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], $e->status);
+        }
+
+        if ($request->input('password') === $request->input('new_password')) {
+            return response()->json(['message' => 'Old and new passwords matched.'], 422);
+        }
+
+        /** @var string $password */
+        $password = $request->input('new_password');
+
+        User::where('login', $request->input('login'))
+            ->firstOrFail()
+            ->update(['password' => Hash::make($password)]);
+
+        Auth::user()?->tokens()->delete();
+
+        return response()->json(['message' => 'Password changed successfully. All sessions was closed.'], 200);
+    }
 }

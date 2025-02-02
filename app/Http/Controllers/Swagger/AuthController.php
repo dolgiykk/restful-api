@@ -77,6 +77,40 @@ use App\Http\Controllers\Controller;
  *             @OA\Property(property="message", type="string", example="Unauthenticated.")
  *         )
  *     )
+ * ),
+ * @OA\Post(
+ *     path="/api/v1/change-password",
+ *     summary="Change password",
+ *     tags={"Auth"},
+ *     @OA\RequestBody(
+ *          @OA\JsonContent(
+ *              type="object",
+ *              @OA\Property(property="login", type="string", example="SomeName"),
+ *              @OA\Property(property="password", type="string", example="password123"),
+ *              @OA\Property(property="new_password", type="string", example="new_password123"),
+ *          )
+ *      ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Change password and drop all sessions.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Password changed successfully. All sessions was closed.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Old and new passwords matched.",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Old and new passwords matched.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *          response=401,
+ *          description="Invalid credentials.",
+ *          @OA\JsonContent(
+ *              @OA\Property(property="message", type="string", example="Invalid credentials.")
+ *          )
+ *      )
  * )
  */
 class AuthController extends Controller
