@@ -10,6 +10,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/users', [UserController::class, 'getUsers']);
     Route::get('/users/{user}', [UserController::class, 'getUser']);
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+    Route::middleware('auth:sanctum')->post('/close-other-sessions', [AuthController::class, 'closeOtherSessions']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
 });

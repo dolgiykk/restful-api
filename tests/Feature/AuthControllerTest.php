@@ -258,4 +258,38 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(422)
             ->assertJson(['message' => 'Old and new passwords matched.']);
     }
+
+    /**
+     * @return void
+     */
+    public function test_close_other_sessions_successfully(): void
+    {
+        $user = User::factory()->create();
+        $currentToken = $user->createToken('Current Session');
+
+        $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
+
+        $tokenId1 = $user->createToken('Token 1')->accessToken->id;
+        $tokenId2 = $user->createToken('Token 2')->accessToken->id;
+
+        $response = $this->postJson('/api/v1/close-other-sessions');
+
+        $response->assertStatus(200)
+            ->assertJson(['message' => 'All sessions on other devices were closed successfully.']);
+
+        $this->assertDatabaseHas('personal_access_tokens', ['id' => $currentToken->accessToken->id]);
+        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $tokenId1]);
+        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $tokenId2]);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_close_other_sessions_without_authentication(): void
+    {
+        $response = $this->postJson('/api/v1/logout');
+
+        $response->assertStatus(401)
+            ->assertJson(['message' => 'Unauthenticated.']);
+    }
 }

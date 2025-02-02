@@ -264,6 +264,54 @@
                 }
             }
         },
+        "/api/v1/close-other-sessions": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Close other sessions",
+                "operationId": "439f76c8fcddabfa99556e1b0130f0e4",
+                "responses": {
+                    "200": {
+                        "description": "All sessions on other devices were closed.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All sessions on other devices were closed successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "tags": [
