@@ -82,12 +82,13 @@ use App\Http\Controllers\Controller;
  *     path="/api/v1/change-password",
  *     summary="Change password",
  *     tags={"Auth"},
+ *     security={{"bearerAuth":{}}},
  *     @OA\RequestBody(
  *          @OA\JsonContent(
  *              type="object",
- *              @OA\Property(property="login", type="string", example="SomeName"),
  *              @OA\Property(property="password", type="string", example="password123"),
  *              @OA\Property(property="new_password", type="string", example="new_password123"),
+ *              @OA\Property(property="new_password_duplicate", type="string", example="new_password123"),
  *          )
  *      ),
  *     @OA\Response(

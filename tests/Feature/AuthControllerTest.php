@@ -172,16 +172,19 @@ class AuthControllerTest extends TestCase
      */
     public function test_change_password_successfully(): void
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => Hash::make('password123'),
         ]);
 
+        $currentToken = $user->createToken('Current Session');
+        $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
+
         $payload = [
-            'login' => 'TestUser',
             'password' => 'password123',
             'new_password' => 'new_password123',
+            'new_password_duplicate' => 'new_password123',
         ];
 
         $response = $this->postJson('/api/v1/change-password', $payload);
@@ -195,45 +198,25 @@ class AuthControllerTest extends TestCase
      */
     public function test_change_password_with_wrong_password(): void
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => Hash::make('password123'),
         ]);
 
+        $currentToken = $user->createToken('Current Session');
+        $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
+
         $payload = [
-            'login' => 'TestUser',
             'password' => 'wrong_password',
             'new_password' => 'new_password123',
+            'new_password_duplicate' => 'new_password123',
         ];
 
         $response = $this->postJson('/api/v1/change-password', $payload);
 
         $response->assertStatus(401)
-            ->assertJson(['message' => 'Incorrect credentials.']);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_change_password_with_nonexistent_login(): void
-    {
-        User::factory()->create([
-            'login' => 'TestUser',
-            'email' => 'test@test.com',
-            'password' => Hash::make('password123'),
-        ]);
-
-        $payload = [
-            'login' => 'nonexistentLogin',
-            'password' => 'password123',
-            'new_password' => 'new_password123',
-        ];
-
-        $response = $this->postJson('/api/v1/change-password', $payload);
-
-        $response->assertStatus(401)
-            ->assertJson(['message' => 'Incorrect credentials.']);
+            ->assertJson(['message' => 'Wrong password.']);
     }
 
     /**
@@ -241,22 +224,51 @@ class AuthControllerTest extends TestCase
      */
     public function test_change_password_with_same_password(): void
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'login' => 'TestUser',
             'email' => 'test@test.com',
             'password' => Hash::make('password123'),
         ]);
 
+        $currentToken = $user->createToken('Current Session');
+        $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
+
         $payload = [
-            'login' => 'TestUser',
             'password' => 'password123',
             'new_password' => 'password123',
+            'new_password_duplicate' => 'password123',
         ];
 
         $response = $this->postJson('/api/v1/change-password', $payload);
 
         $response->assertStatus(422)
             ->assertJson(['message' => 'Old and new passwords matched.']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_change_password_with_different_new_passwords(): void
+    {
+        $user = User::factory()->create([
+            'login' => 'TestUser',
+            'email' => 'test@test.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        $currentToken = $user->createToken('Current Session');
+        $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
+
+        $payload = [
+            'password' => 'password123',
+            'new_password' => 'new_password123',
+            'new_password_duplicate' => 'different_new_password123',
+        ];
+
+        $response = $this->postJson('/api/v1/change-password', $payload);
+
+        $response->assertStatus(422)
+            ->assertJson(['message' => 'New password fields does not match.']);
     }
 
     /**

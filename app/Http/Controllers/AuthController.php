@@ -48,7 +48,7 @@ class AuthController extends Controller
         try {
             $request->validate([
                 'login' => 'string|required',
-                'password' => 'string|required',
+                'password' => 'string|required|min:8',
             ]);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], $e->status);
@@ -88,32 +88,43 @@ class AuthController extends Controller
      */
     public function changePassword(Request $request): JsonResponse
     {
-        $auth = $this->login($request);
-
-        if ($auth->status() !== 200) {
-            return response()->json(['message' => 'Incorrect credentials.'], 401);
-        }
+        $user = $request->user();
 
         try {
             $request->validate([
+                'password' => 'string|required|min:8',
                 'new_password' => 'string|required|min:8',
+                'new_password_duplicate' => 'string|required|min:8',
             ]);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], $e->status);
+        }
+
+        if (! $user?->currentAccessToken()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        /** @var string $password */
+        $password = $request->input('password');
+        /** @var string $newPassword */
+        $newPassword = $request->input('new_password');
+
+        if (! Hash::check($password, $user->password)) {
+            return response()->json(['message' => 'Wrong password.'], 401);
+        }
+
+        if ($request->input('new_password') !== $request->input('new_password_duplicate')) {
+            return response()->json(['message' => 'New password fields does not match.'], 422);
         }
 
         if ($request->input('password') === $request->input('new_password')) {
             return response()->json(['message' => 'Old and new passwords matched.'], 422);
         }
 
-        /** @var string $password */
-        $password = $request->input('new_password');
-
-        User::where('login', $request->input('login'))
-            ->firstOrFail()
-            ->update(['password' => Hash::make($password)]);
-
-        Auth::user()?->tokens()->delete();
+        $user->update(['password' => Hash::make($newPassword)]);
+        $user->tokens()
+            ->where('id', '!=', $user->currentAccessToken()->id)
+            ->delete();
 
         return response()->json(['message' => 'Password changed successfully. All sessions was closed.'], 200);
     }
