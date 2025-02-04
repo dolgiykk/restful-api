@@ -178,7 +178,11 @@ class AuthController extends Controller
         $google2fa = new Google2FA();
         $secret = $google2fa->generateSecretKey();
         $user->update(['two_factor_secret' => $secret]);
-        $qrCodeUrl = $google2fa->getQRCodeUrl(env('APP_NAME'), $user->login, $secret);
+
+        /** @var string $appName */
+        $appName = config('app.name');
+
+        $qrCodeUrl = $google2fa->getQRCodeUrl($appName, $user->login, $secret);
         $user->update([
             'two_factor_secret' => $secret,
             'two_factor_qr_code_url' => $qrCodeUrl,
@@ -213,8 +217,14 @@ class AuthController extends Controller
             return response()->json(['errors' => $e->errors()], $e->status);
         }
 
+        /** @var string $twoFactorSecret */
+        $twoFactorSecret = $user->two_factor_secret;
+
+        /** @var string $twoFactorCode */
+        $twoFactorCode = $request->input('two_factor_code');
+
         $google2fa = new Google2FA();
-        $isValid = $google2fa->verifyKey($user->two_factor_secret, $request->input('two_factor_code'));
+        $isValid = $google2fa->verifyKey($twoFactorSecret, $twoFactorCode);
 
         if (! $isValid) {
             return response()->json(['message' => 'Wrong verification code.'], 401);
