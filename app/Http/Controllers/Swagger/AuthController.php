@@ -132,7 +132,54 @@ use App\Http\Controllers\Controller;
  *              @OA\Property(property="message", type="string", example="Unauthenticated.")
  *          )
  *      )
- * )
+ * ),
+ * @OA\Post(
+ *     path="/api/v1/enable2FA",
+ *     summary="Enable Two Factor Authentification",
+ *     tags={"Auth"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Two Factor Authentification enabled successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="two_factor_secret", type="string", example="DAQJRAKOTDG37DVU"),
+ *             @OA\Property(property="two_factor_qr_code_base64", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *          response=401,
+ *          description="Unauthenticated.",
+ *          @OA\JsonContent(
+ *              @OA\Property(property="message", type="string", example="Unauthenticated.")
+ *          )
+ *     )
+ * ),
+ * @OA\Post(
+ *      path="/api/v1/verify2FA",
+ *      summary="Verify Two Factor Authentification code",
+ *      tags={"Auth"},
+ *      security={{"bearerAuth":{}}},
+ *      @OA\RequestBody(
+ *           @OA\JsonContent(
+ *               type="object",
+ *               @OA\Property(property="two_factor_code", type="numeric", example="123456"),
+ *           )
+ *      ),
+ *      @OA\Response(
+ *           response=200,
+ *           description="Two Factor Authentification verified successfully.",
+ *           @OA\JsonContent(
+ *               @OA\Property(property="message", type="string", example="2FA verified successfully."),
+ *           )
+ *      ),
+ *      @OA\Response(
+ *            response=401,
+ *            description="Unauthenticated.",
+ *            @OA\JsonContent(
+ *                @OA\Property(property="message", type="string", example="Unauthenticated.")
+ *            )
+ *      ),
+ *  )
  */
 class AuthController extends Controller
 {

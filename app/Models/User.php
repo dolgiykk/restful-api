@@ -27,6 +27,8 @@ class User extends Authenticatable
         'second_name',
         'birthday',
         'sex',
+        'two_factor_secret',
+        'two_factor_qr_code_url',
     ];
 
     /**
@@ -37,6 +39,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_qr_code_url',
     ];
 
     /**

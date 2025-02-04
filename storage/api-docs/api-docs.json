@@ -194,15 +194,15 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "login": {
-                                        "type": "string",
-                                        "example": "SomeName"
-                                    },
                                     "password": {
                                         "type": "string",
                                         "example": "password123"
                                     },
                                     "new_password": {
+                                        "type": "string",
+                                        "example": "new_password123"
+                                    },
+                                    "new_password_duplicate": {
                                         "type": "string",
                                         "example": "new_password123"
                                     }
@@ -261,7 +261,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/close-other-sessions": {
@@ -281,6 +286,120 @@
                                         "message": {
                                             "type": "string",
                                             "example": "All sessions on other devices were closed successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enable2FA": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Enable Two Factor Authentification",
+                "operationId": "de339b2102da7b6f49e184ee833bdeef",
+                "responses": {
+                    "200": {
+                        "description": "Two Factor Authentification enabled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "two_factor_secret": {
+                                            "type": "string",
+                                            "example": "DAQJRAKOTDG37DVU"
+                                        },
+                                        "two_factor_qr_code_base64": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/verify2FA": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify Two Factor Authentification code",
+                "operationId": "472142c9c9f870b7606f79ea50f05984",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "two_factor_code": {
+                                        "type": "numeric",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Two Factor Authentification verified successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "2FA verified successfully."
                                         }
                                     },
                                     "type": "object"

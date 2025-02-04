@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QRCodeHelper;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
+use PragmaRX\Google2FA\Google2FA;
 
 class AuthController extends Controller
 {
@@ -146,5 +151,75 @@ class AuthController extends Controller
             ->delete();
 
         return response()->json(['message' => 'All sessions on other devices were closed successfully.'], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws IncompatibleWithGoogleAuthenticatorException
+     * @throws InvalidCharactersException
+     * @throws SecretKeyTooShortException
+     */
+    public function enable2FA(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user?->currentAccessToken()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        if ($user->two_factor_secret && $user->two_factor_qr_code_url) {
+            return response()->json([
+                'two_factor_secret' => $user->two_factor_secret,
+                'two_factor_qr_code_base64' => QRCodeHelper::toBase64($user->two_factor_qr_code_url),
+            ], 200);
+        }
+
+        $google2fa = new Google2FA();
+        $secret = $google2fa->generateSecretKey();
+        $user->update(['two_factor_secret' => $secret]);
+        $qrCodeUrl = $google2fa->getQRCodeUrl(env('APP_NAME'), $user->login, $secret);
+        $user->update([
+            'two_factor_secret' => $secret,
+            'two_factor_qr_code_url' => $qrCodeUrl,
+        ]);
+
+        return response()->json([
+            'two_factor_secret' => $secret,
+            'two_factor_qr_code_base64' => QRCodeHelper::toBase64($qrCodeUrl),
+        ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws IncompatibleWithGoogleAuthenticatorException
+     * @throws InvalidCharactersException
+     * @throws SecretKeyTooShortException
+     */
+    public function verify2FA(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user?->currentAccessToken()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        try {
+            $request->validate([
+                'two_factor_code' => 'numeric|required',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], $e->status);
+        }
+
+        $google2fa = new Google2FA();
+        $isValid = $google2fa->verifyKey($user->two_factor_secret, $request->input('two_factor_code'));
+
+        if (! $isValid) {
+            return response()->json(['message' => 'Wrong verification code.'], 401);
+        }
+
+        return response()->json(['message' => '2FA verified successfully.'], 200);
     }
 }
