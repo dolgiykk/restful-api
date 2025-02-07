@@ -12,10 +12,14 @@ Route::prefix('v1')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'sendResetToken']);
     Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-    Route::middleware('auth:sanctum')->post('/close-other-sessions', [AuthController::class, 'closeOtherSessions']);
-    Route::middleware('auth:sanctum')->post('/change-password', [AuthController::class, 'changePassword']);
-    Route::middleware('auth:sanctum')->post('/enable2FA', [AuthController::class, 'enable2FA']);
-    Route::middleware('auth:sanctum')->post('/verify2FA', [AuthController::class, 'verify2FA']);
-    Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/close-other-sessions', [AuthController::class, 'closeOtherSessions'])->middleware('auth:sanctum');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->middleware('auth:sanctum');
+    Route::post('/enable2FA', [AuthController::class, 'enable2FA'])->middleware('auth:sanctum');
+    Route::post('/verify2FA', [AuthController::class, 'verify2FA'])->middleware('auth:sanctum');
+    Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:sanctum');
+    Route::post('/email/send-verify', [AuthController::class, 'sendVerificationEmail'])
+        ->name('verification.send');
+    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+        ->name('verification.verify');
 });
