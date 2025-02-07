@@ -12,7 +12,7 @@
                     "Auth"
                 ],
                 "summary": "Register user",
-                "operationId": "26ac06b496123d055b26a788165924bb",
+                "operationId": "f4ad0622a902323a3286d9512ee41c41",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -78,7 +78,7 @@
                     "Auth"
                 ],
                 "summary": "Login via login",
-                "operationId": "3e5fe318fe58355689b1608ed9f5430b",
+                "operationId": "c082ba7b6163b8b1b6bdf484d2601e84",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -140,7 +140,7 @@
                     "Auth"
                 ],
                 "summary": "Logout",
-                "operationId": "dc8632a856f454a9726cb289b0ad845b",
+                "operationId": "2a4b6fb8e41a176abaf759aab30b82a2",
                 "responses": {
                     "200": {
                         "description": "Logged out successfully.",
@@ -188,7 +188,7 @@
                     "Auth"
                 ],
                 "summary": "Change password",
-                "operationId": "9438915ceeae63776cea5fe8652e12d2",
+                "operationId": "62d71c524dc3b26d76e0413aaeec37e6",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -275,7 +275,7 @@
                     "Auth"
                 ],
                 "summary": "Close other sessions",
-                "operationId": "439f76c8fcddabfa99556e1b0130f0e4",
+                "operationId": "6ab58b9764d3f19b81abca960239118d",
                 "responses": {
                     "200": {
                         "description": "All sessions on other devices were closed.",
@@ -323,7 +323,7 @@
                     "Auth"
                 ],
                 "summary": "Enable Two Factor Authentification",
-                "operationId": "de339b2102da7b6f49e184ee833bdeef",
+                "operationId": "2ec24ebeb33d7bda7c30e433932b6d9b",
                 "responses": {
                     "200": {
                         "description": "Two Factor Authentification enabled successfully",
@@ -374,7 +374,7 @@
                     "Auth"
                 ],
                 "summary": "Verify Two Factor Authentification code",
-                "operationId": "472142c9c9f870b7606f79ea50f05984",
+                "operationId": "f0f3082277c62a8ac61929ce021588bd",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -437,7 +437,7 @@
                     "Auth"
                 ],
                 "summary": "Create token and send mail to reset password",
-                "operationId": "bbd4576036f268ce5d46402d9622049b",
+                "operationId": "1cb17821d8ed3922058ce1b110b99cc6",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -495,7 +495,7 @@
                     "Auth"
                 ],
                 "summary": "Display reset password form",
-                "operationId": "e73f5699e380808b277d07c513813321",
+                "operationId": "cc464e5944c6b7b344887800b2836978",
                 "parameters": [
                     {
                         "name": "email",
@@ -562,7 +562,7 @@
                     "Auth"
                 ],
                 "summary": "Create token and send mail to reset password",
-                "operationId": "54a4b7b49f79cc400ed093c1db8c3807",
+                "operationId": "5ad6680cfebc64ecd5fabac30ac0cebe",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -638,14 +638,14 @@
                 }
             }
         },
-        "/api/v1/email/resend": {
+        "/api/v1/email/send-verify": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Send Verification Email",
-                "description": "Resend an email verification link to the authenticated user.",
-                "operationId": "e83f9ab6cd06ee3d33a9649919e6727c",
+                "description": "Send an email verification link to the authenticated user.",
+                "operationId": "cab0e4aeffe0528f04616e1a4596dd31",
                 "responses": {
                     "202": {
                         "description": "Verification email sent.",
@@ -710,7 +710,7 @@
                 ],
                 "summary": "Verify Email",
                 "description": "Verify the user's email using the link from the verification email.",
-                "operationId": "8a9dc78897df7a17f835c313405a754e",
+                "operationId": "3818f5334d1f1cc85de64b1641375085",
                 "parameters": [
                     {
                         "name": "id",
@@ -776,7 +776,7 @@
                     "User"
                 ],
                 "summary": "Users list",
-                "operationId": "6f8f0134e30ae7557795c2a8f042fd83",
+                "operationId": "1bcbf5344cd1cba0315d9f697fdc18c3",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -906,7 +906,7 @@
                     "User"
                 ],
                 "summary": "Get user by ID",
-                "operationId": "a7b5955c8a9df5d124ab77956532701c",
+                "operationId": "6404ae3f3a6795408390de14ce5ba1dd",
                 "parameters": [
                     {
                         "name": "id",
