@@ -7,7 +7,9 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
@@ -98,8 +100,7 @@ class AuthController extends Controller
         try {
             $request->validate([
                 'password' => 'string|required|min:8',
-                'new_password' => 'string|required|min:8',
-                'new_password_duplicate' => 'string|required|min:8',
+                'new_password' => 'string|required|confirmed|min:8',
             ]);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], $e->status);
@@ -116,10 +117,6 @@ class AuthController extends Controller
 
         if (! Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Wrong password.'], 401);
-        }
-
-        if ($request->input('new_password') !== $request->input('new_password_duplicate')) {
-            return response()->json(['message' => 'New password fields does not match.'], 422);
         }
 
         if ($request->input('password') === $request->input('new_password')) {
@@ -231,5 +228,102 @@ class AuthController extends Controller
         }
 
         return response()->json(['message' => '2FA verified successfully.'], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function sendResetToken(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'email' => 'required|string|email|exists:users,email',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], $e->status);
+        }
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['message' => __($status)], 422);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function showResetPasswordForm(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'email' => 'required|string|email|exists:users,email',
+                'token' => 'required|string',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], $e->status);
+        }
+
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $request->get('email'))
+            ->first();
+
+        /** @var string $token */
+        $token = $request->get('token');
+
+        if (! $resetRecord || ! isset($resetRecord->token) || ! Hash::check($token, $resetRecord->token)) {
+            return response()->json(['errors' => 'Invalid or expired token.'], 422);
+        }
+
+        return response()->json([
+            'email' => $request->get('email'),
+            'token' => $request->get('token'),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function resetPassword(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'email' => 'required|string|email|exists:users,email',
+                'token' => 'required|string',
+                'password' => 'required|string|confirmed',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], $e->status);
+        }
+
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $request->input('email'))
+            ->first();
+
+        /** @var string $token */
+        $token = $request->input('token');
+
+        if (! $resetRecord || ! isset($resetRecord->token) || ! Hash::check($token, $resetRecord->token)) {
+            return response()->json(['errors' => 'Invalid or expired token.'], 400);
+        }
+
+        /** @var string $status */
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->save();
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['message' => __($status)], 422);
     }
 }

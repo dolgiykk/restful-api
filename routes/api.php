@@ -9,6 +9,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/users', [UserController::class, 'getUsers']);
     Route::get('/users/{user}', [UserController::class, 'getUser']);
+    Route::post('/forgot-password', [AuthController::class, 'sendResetToken']);
+    Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
     Route::middleware('auth:sanctum')->post('/close-other-sessions', [AuthController::class, 'closeOtherSessions']);
     Route::middleware('auth:sanctum')->post('/change-password', [AuthController::class, 'changePassword']);
