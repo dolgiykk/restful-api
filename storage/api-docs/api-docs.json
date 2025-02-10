@@ -182,13 +182,145 @@
                 ]
             }
         },
-        "/api/v1/change-password": {
+        "/api/v1/email/verify/send": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Send Verification Email",
+                "description": "Send an email verification link to the authenticated user.",
+                "operationId": "aace7f53edeb27c3bcc5b78a0c5529b0",
+                "responses": {
+                    "202": {
+                        "description": "Verification email sent.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Verification email sent."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Email already verified.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email already verified."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/email/verify/{id}/{hash}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify Email",
+                "description": "Verify the user's email using the link from the verification email.",
+                "operationId": "355746b4e486c16b6d292c0690902fdb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "Email verification hash",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email has been successfully verified or already verified.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email has been successfully verified."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid verification link.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid verification link."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/v1/change": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Change password",
-                "operationId": "62d71c524dc3b26d76e0413aaeec37e6",
+                "operationId": "085d2b684e2958ebe09dcb62e6183210",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -269,175 +401,13 @@
                 ]
             }
         },
-        "/api/v1/close-other-sessions": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Close other sessions",
-                "operationId": "6ab58b9764d3f19b81abca960239118d",
-                "responses": {
-                    "200": {
-                        "description": "All sessions on other devices were closed.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "All sessions on other devices were closed successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/enable2FA": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Enable Two Factor Authentification",
-                "operationId": "2ec24ebeb33d7bda7c30e433932b6d9b",
-                "responses": {
-                    "200": {
-                        "description": "Two Factor Authentification enabled successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "two_factor_secret": {
-                                            "type": "string",
-                                            "example": "DAQJRAKOTDG37DVU"
-                                        },
-                                        "two_factor_qr_code_base64": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/verify2FA": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Verify Two Factor Authentification code",
-                "operationId": "f0f3082277c62a8ac61929ce021588bd",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "two_factor_code": {
-                                        "type": "numeric",
-                                        "example": "123456"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Two Factor Authentification verified successfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "2FA verified successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/api/v1/forgot-password": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Create token and send mail to reset password",
-                "operationId": "1cb17821d8ed3922058ce1b110b99cc6",
+                "operationId": "5a4887316b603c2d9514ca1682ba3cfc",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -495,7 +465,7 @@
                     "Auth"
                 ],
                 "summary": "Display reset password form",
-                "operationId": "cc464e5944c6b7b344887800b2836978",
+                "operationId": "222817c9f50e2c3c9c0f92bb6adacf92",
                 "parameters": [
                     {
                         "name": "email",
@@ -562,7 +532,7 @@
                     "Auth"
                 ],
                 "summary": "Create token and send mail to reset password",
-                "operationId": "5ad6680cfebc64ecd5fabac30ac0cebe",
+                "operationId": "ba603d8bf39034f4a80f32780c6afe61",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -638,40 +608,23 @@
                 }
             }
         },
-        "/api/v1/email/send-verify": {
+        "/api/v1/close-other-sessions": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Send Verification Email",
-                "description": "Send an email verification link to the authenticated user.",
-                "operationId": "cab0e4aeffe0528f04616e1a4596dd31",
+                "summary": "Close other sessions",
+                "operationId": "2e148c26219b2e7d10d23bbbf3213e4c",
                 "responses": {
-                    "202": {
-                        "description": "Verification email sent.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Verification email sent."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
                     "200": {
-                        "description": "Email already verified.",
+                        "description": "All sessions on other devices were closed.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Email already verified."
+                                            "example": "All sessions on other devices were closed successfully."
                                         }
                                     },
                                     "type": "object"
@@ -703,44 +656,26 @@
                 ]
             }
         },
-        "/api/v1/email/verify/{id}/{hash}": {
-            "get": {
+        "/api/v1/enable2FA": {
+            "post": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Verify Email",
-                "description": "Verify the user's email using the link from the verification email.",
-                "operationId": "3818f5334d1f1cc85de64b1641375085",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "hash",
-                        "in": "path",
-                        "description": "Email verification hash",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Enable Two Factor Authentification",
+                "operationId": "15775378c80d0705dcb115c046e1978e",
                 "responses": {
                     "200": {
-                        "description": "Email has been successfully verified or already verified.",
+                        "description": "Two Factor Authentification enabled successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "two_factor_secret": {
                                             "type": "string",
-                                            "example": "Email has been successfully verified."
+                                            "example": "DAQJRAKOTDG37DVU"
+                                        },
+                                        "two_factor_qr_code_base64": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -748,26 +683,91 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid verification link.",
+                    "401": {
+                        "description": "Unauthenticated.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Invalid verification link."
+                                            "example": "Unauthenticated."
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
-                    },
-                    "404": {
-                        "description": "User not found."
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/verify2FA": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify Two Factor Authentification code",
+                "operationId": "0536af3838204ffc68726676f1bb1df6",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "two_factor_code": {
+                                        "type": "numeric",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Two Factor Authentification verified successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "2FA verified successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/v1/users": {
