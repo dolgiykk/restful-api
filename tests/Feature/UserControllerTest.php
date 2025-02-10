@@ -27,7 +27,7 @@ class UserControllerTest extends TestCase
     /**
      * @return void
      */
-    public function test_get_users_without_paginate_query(): void
+    public function test_index_without_paginate_query(): void
     {
         $response = $this->getJson('/api/v1/users');
 
@@ -50,7 +50,7 @@ class UserControllerTest extends TestCase
     /**
      * @return void
      */
-    public function test_get_users_with_custom_paginate_query(): void
+    public function test_index_with_custom_paginate_query(): void
     {
         $response = $this->getJson('/api/v1/users?per_page=5');
         $response->assertStatus(200);
@@ -60,7 +60,7 @@ class UserControllerTest extends TestCase
     /**
      * @return void
      */
-    public function test_get_users_when_empty_database(): void
+    public function test_index_when_empty_database(): void
     {
         User::query()->delete();
 

@@ -12,7 +12,7 @@
                     "Auth"
                 ],
                 "summary": "Register user",
-                "operationId": "f4ad0622a902323a3286d9512ee41c41",
+                "operationId": "deb636b2835e06bbaf42f5d1c09c4fb3",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -78,7 +78,7 @@
                     "Auth"
                 ],
                 "summary": "Login via login",
-                "operationId": "c082ba7b6163b8b1b6bdf484d2601e84",
+                "operationId": "87312a78798c14bbb2bd82a3c4316c3c",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -140,7 +140,7 @@
                     "Auth"
                 ],
                 "summary": "Logout",
-                "operationId": "2a4b6fb8e41a176abaf759aab30b82a2",
+                "operationId": "5c426b1e5da3944c5594ba1ebde3f87b",
                 "responses": {
                     "200": {
                         "description": "Logged out successfully.",
@@ -189,7 +189,7 @@
                 ],
                 "summary": "Send Verification Email",
                 "description": "Send an email verification link to the authenticated user.",
-                "operationId": "aace7f53edeb27c3bcc5b78a0c5529b0",
+                "operationId": "d920bb96b50bd5c8381172d4333cc299",
                 "responses": {
                     "202": {
                         "description": "Verification email sent.",
@@ -254,7 +254,7 @@
                 ],
                 "summary": "Verify Email",
                 "description": "Verify the user's email using the link from the verification email.",
-                "operationId": "355746b4e486c16b6d292c0690902fdb",
+                "operationId": "96e06c52354cf9dbed1acf31ff31e1ec",
                 "parameters": [
                     {
                         "name": "id",
@@ -320,7 +320,7 @@
                     "Auth"
                 ],
                 "summary": "Change password",
-                "operationId": "085d2b684e2958ebe09dcb62e6183210",
+                "operationId": "22a428164a6a1b74f627518af3eecfc6",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -407,7 +407,7 @@
                     "Auth"
                 ],
                 "summary": "Create token and send mail to reset password",
-                "operationId": "5a4887316b603c2d9514ca1682ba3cfc",
+                "operationId": "552675e14da65d66551d55ea29926566",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -465,7 +465,7 @@
                     "Auth"
                 ],
                 "summary": "Display reset password form",
-                "operationId": "222817c9f50e2c3c9c0f92bb6adacf92",
+                "operationId": "86d122d3e92e7bb1370c438fab3edd78",
                 "parameters": [
                     {
                         "name": "email",
@@ -532,7 +532,7 @@
                     "Auth"
                 ],
                 "summary": "Create token and send mail to reset password",
-                "operationId": "ba603d8bf39034f4a80f32780c6afe61",
+                "operationId": "c5eaac378985e82be3b5429c3c8cac17",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -608,13 +608,137 @@
                 }
             }
         },
+        "/api/v1/tokens": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Close other sessions",
+                "operationId": "77c56378571f203a07dd24d4a9e63ab5",
+                "responses": {
+                    "200": {
+                        "description": "All sessions on other devices were closed.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "auth_token"
+                                                    },
+                                                    "tokenable_type": {
+                                                        "type": "string",
+                                                        "example": "App\\\\Models\\\\User"
+                                                    },
+                                                    "tokenable_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "abilities": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "*"
+                                                        }
+                                                    },
+                                                    "last_used_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    },
+                                                    "expires_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8080/api/v1/users?page=2"
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/close-other-sessions": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Close other sessions",
-                "operationId": "2e148c26219b2e7d10d23bbbf3213e4c",
+                "operationId": "c1f14a5e36eab77703ac4495076702c4",
                 "responses": {
                     "200": {
                         "description": "All sessions on other devices were closed.",
@@ -662,7 +786,7 @@
                     "Auth"
                 ],
                 "summary": "Enable Two Factor Authentification",
-                "operationId": "15775378c80d0705dcb115c046e1978e",
+                "operationId": "7bd80ed6177033e49597980f2f97037e",
                 "responses": {
                     "200": {
                         "description": "Two Factor Authentification enabled successfully",
@@ -713,7 +837,7 @@
                     "Auth"
                 ],
                 "summary": "Verify Two Factor Authentification code",
-                "operationId": "0536af3838204ffc68726676f1bb1df6",
+                "operationId": "6f7de91d180a3719b3b184ff79ddc9c5",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -776,7 +900,7 @@
                     "User"
                 ],
                 "summary": "Users list",
-                "operationId": "1bcbf5344cd1cba0315d9f697fdc18c3",
+                "operationId": "ed60fd9c0d82f219cb715b272953056b",
                 "parameters": [
                     {
                         "name": "per_page",

@@ -21,7 +21,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/reset-password', [PasswordController::class, 'reset']);
     Route::post('/change-password', [PasswordController::class, 'change'])->middleware('auth:sanctum');
 
-    Route::get('/users', [UserController::class, 'getUsers']);
+    Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'getUser']);
 
     Route::post('/email/verify/send', [EmailVerificationController::class, 'send'])
@@ -29,5 +29,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
         ->name('verification.verify');
 
+    Route::post('/tokens', [PersonalAccessTokenController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/logout-other-devices', [PersonalAccessTokenController::class, 'revokeOtherTokens'])->middleware('auth:sanctum');
 });

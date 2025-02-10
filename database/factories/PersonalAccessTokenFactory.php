@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\PersonalAccessToken;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -14,7 +15,7 @@ class PersonalAccessTokenFactory extends Factory
     public function definition(): array
     {
         return [
-            'tokenable_type' => $this->faker->word(),
+            'tokenable_type' => User::class,
             'tokenable_id' => $this->faker->randomNumber(),
             'name' => $this->faker->name(),
             'token' => Str::random(10),

@@ -56,7 +56,7 @@ class UserController extends Controller
      *      )
      *  )
      */
-    public function getUsers(Request $request)
+    public function index(Request $request)
     {
     }
 
