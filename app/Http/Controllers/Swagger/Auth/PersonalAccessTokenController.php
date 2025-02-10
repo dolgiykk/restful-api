@@ -99,7 +99,7 @@ class PersonalAccessTokenController extends Controller
      *
      *      @OA\Response(
      *           response=200,
-     *           description="Token successfully deleted.",
+     *           description="Token deleted successfully.",
      *           @OA\JsonContent(
      *               @OA\Property(property="message", type="string", example="Token deleted successfully.")
      *           )

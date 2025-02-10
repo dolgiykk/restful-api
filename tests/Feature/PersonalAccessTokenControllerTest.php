@@ -125,7 +125,7 @@ class PersonalAccessTokenControllerTest extends TestCase
         $response = $this->deleteJson('/api/v1/logout-device/'.$tokenId1);
 
         $response->assertStatus(200)
-            ->assertJson(['message' => 'Token successfully deleted.']);
+            ->assertJson(['message' => 'Token deleted successfully.']);
     }
 
     /**
