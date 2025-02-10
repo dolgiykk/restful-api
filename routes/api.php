@@ -31,4 +31,5 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/tokens', [PersonalAccessTokenController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/logout-other-devices', [PersonalAccessTokenController::class, 'revokeOtherTokens'])->middleware('auth:sanctum');
+    Route::delete('/logout-device/{id}', [PersonalAccessTokenController::class, 'destroy'])->middleware('auth:sanctum');
 });

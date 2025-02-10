@@ -732,13 +732,13 @@
                 ]
             }
         },
-        "/api/v1/close-other-sessions": {
+        "/api/v1/logout-other-devices": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Close other sessions",
-                "operationId": "c1f14a5e36eab77703ac4495076702c4",
+                "summary": "Logout other devices",
+                "operationId": "ed57895451e44df6f53f56424c22ea66",
                 "responses": {
                     "200": {
                         "description": "All sessions on other devices were closed.",
@@ -765,6 +765,114 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/logout-device": {
+            "delete": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout device by personal access token ID",
+                "operationId": "2f54558251fc8cae5d8e4b6cdbf591ea",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Personal access token ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token successfully deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Token not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Cannot delete current token.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cannot delete current token."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Token could not be deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token could not be deleted."
                                         }
                                     },
                                     "type": "object"

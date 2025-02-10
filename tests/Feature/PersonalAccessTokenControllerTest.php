@@ -113,4 +113,44 @@ class PersonalAccessTokenControllerTest extends TestCase
         $response->assertStatus(401)
             ->assertJson(['message' => 'Unauthenticated.']);
     }
+
+    /**
+     * @return void
+     */
+    public function test_destroy_successfully(): void
+    {
+        $this->withHeader('Authorization', 'Bearer '.$this->currentToken->plainTextToken);
+
+        $tokenId1 = $this->user->createToken('Token 1')->accessToken->id;
+        $response = $this->deleteJson('/api/v1/logout-device/'.$tokenId1);
+
+        $response->assertStatus(200)
+            ->assertJson(['message' => 'Token successfully deleted.']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_destroy_current_token(): void
+    {
+        $this->withHeader('Authorization', 'Bearer '.$this->currentToken->plainTextToken);
+
+        $response = $this->deleteJson('/api/v1/logout-device/'.$this->currentToken->accessToken->id);
+
+        $response->assertStatus(403)
+            ->assertJson(['message' => 'Cannot delete current token.']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_destroy_nonexistent_token(): void
+    {
+        $this->withHeader('Authorization', 'Bearer '.$this->currentToken->plainTextToken);
+
+        $response = $this->deleteJson('/api/v1/logout-device/'. 9999);
+
+        $response->assertStatus(404)
+            ->assertJson(['message' => 'Token not found.']);
+    }
 }

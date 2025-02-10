@@ -56,8 +56,8 @@ class PersonalAccessTokenController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/api/v1/close-other-sessions",
-     *      summary="Close other sessions",
+     *      path="/api/v1/logout-other-devices",
+     *      summary="Logout other devices",
      *      tags={"Auth"},
      *      security={{"bearerAuth":{}}},
      *
@@ -79,6 +79,66 @@ class PersonalAccessTokenController extends Controller
      *  )
      */
     public function revokeOtherTokens(Request $request)
+    {
+    }
+
+    /**
+     * @OA\Delete(
+     *      path="/api/v1/logout-device",
+     *      summary="Logout device by personal access token ID",
+     *      tags={"Auth"},
+     *      security={{"bearerAuth":{}}},
+     *
+     *      @OA\Parameter(
+     *           name="id",
+     *           in="query",
+     *           required=true,
+     *           description="Personal access token ID",
+     *           @OA\Schema(type="integer", example=10)
+     *      ),
+     *
+     *      @OA\Response(
+     *           response=200,
+     *           description="Token successfully deleted.",
+     *           @OA\JsonContent(
+     *               @OA\Property(property="message", type="string", example="Token deleted successfully.")
+     *           )
+     *      ),
+     *
+     *      @OA\Response(
+     *           response=401,
+     *           description="Unauthenticated.",
+     *           @OA\JsonContent(
+     *               @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *           )
+     *       ),
+     *
+     *      @OA\Response(
+     *              response=404,
+     *              description="Token not found.",
+     *              @OA\JsonContent(
+     *                  @OA\Property(property="message", type="string", example="Token not found.")
+     *              )
+     *          ),
+     *
+     *     @OA\Response(
+     *            response=403,
+     *            description="Cannot delete current token.",
+     *            @OA\JsonContent(
+     *                @OA\Property(property="message", type="string", example="Cannot delete current token.")
+     *            )
+     *        ),
+     *
+     *     @OA\Response(
+     *             response=422,
+     *             description="Token could not be deleted.",
+     *             @OA\JsonContent(
+     *                 @OA\Property(property="message", type="string", example="Token could not be deleted.")
+     *             )
+     *         ),
+     *  )
+     */
+    public function destroy(Request $request)
     {
     }
 }
