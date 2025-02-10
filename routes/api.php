@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\EmailVerificationController;
-use App\Http\Controllers\PasswordController;
-use App\Http\Controllers\PersonalAccessTokenController;
-use App\Http\Controllers\TwoFactorAuthController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\PersonalAccessTokenController;
+use App\Http\Controllers\Auth\TwoFactorAuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
