@@ -3,31 +3,21 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     /**
-     * @param Request $request
+     * @param RegisterRequest $request
      * @return JsonResponse
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'login' => 'string|required|unique:users',
-                'email' => 'string|required|email|unique:users',
-                'password' => 'string|required|min:8',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
         /** @var string $password */
         $password = $request->input('password');
 
@@ -41,20 +31,11 @@ class AuthController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'login' => 'string|required',
-                'password' => 'string|required|min:8',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
         $user = User::where('login', $request->input('login'))->first();
 
         if (! $user) {

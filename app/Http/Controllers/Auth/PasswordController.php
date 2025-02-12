@@ -3,31 +3,24 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\SendResetTokenRequest;
+use App\Http\Requests\Auth\ShowResetPasswordFormRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
 class PasswordController extends Controller
 {
     /**
-     * @param Request $request
+     * @param ChangePasswordRequest $request
      * @return JsonResponse
      */
-    public function change(Request $request): JsonResponse
+    public function change(ChangePasswordRequest $request): JsonResponse
     {
         $user = $request->user();
-
-        try {
-            $request->validate([
-                'password' => 'string|required|min:8',
-                'new_password' => 'string|required|confirmed|min:8',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
 
         if (! $user?->currentAccessToken()) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
@@ -55,19 +48,11 @@ class PasswordController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param SendResetTokenRequest $request
      * @return JsonResponse
      */
-    public function sendResetToken(Request $request): JsonResponse
+    public function sendResetToken(SendResetTokenRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'email' => 'required|string|email|exists:users,email',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
         $status = Password::sendResetLink(
             $request->only('email')
         );
@@ -78,20 +63,11 @@ class PasswordController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param ShowResetPasswordFormRequest $request
      * @return JsonResponse
      */
-    public function showResetForm(Request $request): JsonResponse
+    public function showResetForm(ShowResetPasswordFormRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'email' => 'required|string|email|exists:users,email',
-                'token' => 'required|string',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
         $resetRecord = DB::table('password_reset_tokens')
             ->where('email', $request->get('email'))
             ->first();
@@ -110,21 +86,11 @@ class PasswordController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param ResetPasswordRequest $request
      * @return JsonResponse
      */
-    public function reset(Request $request): JsonResponse
+    public function reset(ResetPasswordRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'email' => 'required|string|email|exists:users,email',
-                'token' => 'required|string',
-                'password' => 'required|string|confirmed',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
         $resetRecord = DB::table('password_reset_tokens')
             ->where('email', $request->input('email'))
             ->first();
