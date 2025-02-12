@@ -1,31 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     /**
-     * @param Request $request
+     * @param RegisterRequest $request
      * @return JsonResponse
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'login' => 'string|required',
-                'email' => 'string|required|email|unique:users',
-                'password' => 'string|required|min:8',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
         /** @var string $password */
         $password = $request->input('password');
 
@@ -39,21 +31,12 @@ class AuthController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'email' => 'string|required|email',
-                'password' => 'string|required',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], $e->status);
-        }
-
-        $user = User::where('email', $request->input('email'))->first();
+        $user = User::where('login', $request->input('login'))->first();
 
         if (! $user) {
             return response()->json(['message' => 'User not found.'], 401);
@@ -69,5 +52,15 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json(['token' => $token], 200);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
+    {
+        Auth::user()?->tokens()->delete();
+
+        return response()->json(['message' => 'Logged out successfully.'], 200);
     }
 }

@@ -14,7 +14,7 @@ class UserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function getUsers(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $perPage = (int) $request->query('per_page') ?: self::DEFAULT_PER_PAGE;
         $users = User::query()->paginate($perPage);
@@ -29,7 +29,7 @@ class UserController extends Controller
                 'next_page_url' => $users->nextPageUrl(),
                 'prev_page_url' => $users->previousPageUrl(),
             ],
-        ]);
+        ], 200);
     }
 
     /**

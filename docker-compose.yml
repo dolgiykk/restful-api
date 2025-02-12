@@ -54,6 +54,15 @@ services:
     networks:
       - restfulapi-network
 
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    container_name: restfulapi-mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+        - restfulapi-network
+
 networks:
   restfulapi-network:
     driver: bridge
