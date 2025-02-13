@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserController extends Controller
 {
@@ -29,7 +30,7 @@ class UserController extends Controller
                 'next_page_url' => $users->nextPageUrl(),
                 'prev_page_url' => $users->previousPageUrl(),
             ],
-        ], 200);
+        ], ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -41,7 +42,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (! $user) {
-            return response()->json(['message' => 'User not found.'], 404);
+            return response()->json(['message' => 'User not found.'], ResponseAlias::HTTP_NOT_FOUND);
         }
 
         return response()->json($user);

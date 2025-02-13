@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 trait ValidationTrait
 {
@@ -15,6 +16,6 @@ trait ValidationTrait
     {
         throw new HttpResponseException(response()->json([
             'errors' => $validator->errors(),
-        ], 422));
+        ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

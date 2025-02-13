@@ -15,7 +15,7 @@ abstract class Request extends FormRequest
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules(): array
     {

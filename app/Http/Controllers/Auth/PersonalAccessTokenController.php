@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PersonalAccessTokenController extends Controller
 {
@@ -19,7 +20,7 @@ class PersonalAccessTokenController extends Controller
         $user = $request->user();
 
         if (! $user?->currentAccessToken()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => 'Unauthenticated.'], ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         $perPage = (int) $request->query('per_page') ?: self::DEFAULT_PER_PAGE;
@@ -48,7 +49,7 @@ class PersonalAccessTokenController extends Controller
         $user = $request->user();
 
         if (! $user?->currentAccessToken()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => 'Unauthenticated.'], ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         $user->tokens()
@@ -67,7 +68,7 @@ class PersonalAccessTokenController extends Controller
         $user = $request->user();
 
         if (! $user?->currentAccessToken()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => 'Unauthenticated.'], ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         $tokenId = $request->route('id');
@@ -75,17 +76,17 @@ class PersonalAccessTokenController extends Controller
         $token = $user->tokens()->where('id', $tokenId)->first();
 
         if (! $token) {
-            return response()->json(['message' => 'Token not found.'], 404);
+            return response()->json(['message' => 'Token not found.'], ResponseAlias::HTTP_NOT_FOUND);
         }
 
         if ($tokenId == $user->currentAccessToken()->id) {
-            return response()->json(['message' => 'Cannot delete current token.'], 403);
+            return response()->json(['message' => 'Cannot delete current token.'], ResponseAlias::HTTP_FORBIDDEN);
         }
 
         if ($token->delete()) {
-            return response()->json(['message' => 'Token deleted successfully.'], 200);
+            return response()->json(['message' => 'Token deleted successfully.'], ResponseAlias::HTTP_OK);
         }
 
-        return response()->json(['message' => 'Token could not be deleted.'], 422);
+        return response()->json(['message' => 'Token could not be deleted.'], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

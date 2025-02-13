@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PasswordController extends Controller
 {
@@ -23,7 +24,7 @@ class PasswordController extends Controller
         $user = $request->user();
 
         if (! $user?->currentAccessToken()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => 'Unauthenticated.'], ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         /** @var string $password */
@@ -32,11 +33,11 @@ class PasswordController extends Controller
         $newPassword = $request->input('new_password');
 
         if (! Hash::check($password, $user->password)) {
-            return response()->json(['message' => 'Wrong password.'], 401);
+            return response()->json(['message' => 'Wrong password.'], ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
         if ($request->input('password') === $request->input('new_password')) {
-            return response()->json(['message' => 'Old and new passwords matched.'], 422);
+            return response()->json(['message' => 'Old and new passwords matched.'], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user->update(['password' => Hash::make($newPassword)]);
@@ -44,7 +45,7 @@ class PasswordController extends Controller
             ->where('id', '!=', $user->currentAccessToken()->id)
             ->delete();
 
-        return response()->json(['message' => 'Password changed successfully. All sessions was closed.'], 200);
+        return response()->json(['message' => 'Password changed successfully. All sessions was closed.'], ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -58,8 +59,8 @@ class PasswordController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => __($status)], 200)
-            : response()->json(['message' => __($status)], 422);
+            ? response()->json(['message' => __($status)], ResponseAlias::HTTP_OK)
+            : response()->json(['message' => __($status)], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -76,7 +77,7 @@ class PasswordController extends Controller
         $token = $request->get('token');
 
         if (! $resetRecord || ! isset($resetRecord->token) || ! Hash::check($token, $resetRecord->token)) {
-            return response()->json(['errors' => 'Invalid or expired token.'], 422);
+            return response()->json(['errors' => 'Invalid or expired token.'], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return response()->json([
@@ -99,7 +100,7 @@ class PasswordController extends Controller
         $token = $request->input('token');
 
         if (! $resetRecord || ! isset($resetRecord->token) || ! Hash::check($token, $resetRecord->token)) {
-            return response()->json(['errors' => 'Invalid or expired token.'], 400);
+            return response()->json(['errors' => 'Invalid or expired token.'], ResponseAlias::HTTP_BAD_REQUEST);
         }
 
         /** @var string $status */
@@ -113,7 +114,7 @@ class PasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? response()->json(['message' => __($status)], 200)
-            : response()->json(['message' => __($status)], 422);
+            ? response()->json(['message' => __($status)], ResponseAlias::HTTP_OK)
+            : response()->json(['message' => __($status)], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
