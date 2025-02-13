@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Request;
 use App\Traits\ValidationTrait;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ChangePasswordRequest extends FormRequest
+class ChangePasswordRequest extends Request
 {
     use ValidationTrait;
 
@@ -18,13 +18,5 @@ class ChangePasswordRequest extends FormRequest
             'password' => 'string|required|min:8',
             'new_password' => 'string|required|confirmed|min:8',
         ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
     }
 }

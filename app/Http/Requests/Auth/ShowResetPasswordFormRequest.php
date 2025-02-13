@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Request;
 use App\Traits\ValidationTrait;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ShowResetPasswordFormRequest extends FormRequest
+class ShowResetPasswordFormRequest extends Request
 {
     use ValidationTrait;
 
@@ -18,13 +18,5 @@ class ShowResetPasswordFormRequest extends FormRequest
             'email' => 'required|string|email|exists:users,email',
             'token' => 'required|string',
         ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Request;
 use App\Traits\ValidationTrait;
-use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class RegisterRequest extends Request
 {
     use ValidationTrait;
 
@@ -19,13 +19,5 @@ class RegisterRequest extends FormRequest
             'email' => 'string|required|email|unique:users',
             'password' => 'string|required|min:8',
         ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
     }
 }
