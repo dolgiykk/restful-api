@@ -10,8 +10,8 @@ class PersonalAccessTokenController extends Controller
     /**
      * @OA\Post(
      *     path="/api/v1/tokens",
-     *     summary="Close other sessions",
-     *     tags={"Auth"},
+     *     summary="Tokens list",
+     *     tags={"Access token"},
      *     security={{"bearerAuth":{}}},
      *
      *     @OA\Response(
@@ -58,7 +58,7 @@ class PersonalAccessTokenController extends Controller
      * @OA\Post(
      *      path="/api/v1/logout-other-devices",
      *      summary="Logout other devices",
-     *      tags={"Auth"},
+     *      tags={"Access token"},
      *      security={{"bearerAuth":{}}},
      *
      *      @OA\Response(
@@ -86,7 +86,7 @@ class PersonalAccessTokenController extends Controller
      * @OA\Delete(
      *      path="/api/v1/logout-device",
      *      summary="Logout device by personal access token ID",
-     *      tags={"Auth"},
+     *      tags={"Access token"},
      *      security={{"bearerAuth":{}}},
      *
      *      @OA\Parameter(

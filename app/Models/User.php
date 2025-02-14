@@ -9,6 +9,19 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property int $id
+ * @property string $login
+ * @property string $email
+ * @property string|null $email_verified_at
+ * @property string $created_at
+ * @property string|null $updated_at
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $second_name
+ * @property string|null $birthday
+ * @property string|null $sex
+ */
 class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

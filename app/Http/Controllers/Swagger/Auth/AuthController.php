@@ -9,42 +9,6 @@ class AuthController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/api/v1/register",
-     *      summary="Register user",
-     *      tags={"Auth"},
-     *
-     *      @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(property="login", type="string", example="SomeName"),
-     *              @OA\Property(property="email", type="string", example="some@email.ru"),
-     *              @OA\Property(property="password", type="string", example="password123"),
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully.",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="User registered successfully.")
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=422,
-     *          description="Validation error.",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="The email has already been taken.")
-     *          )
-     *      ),
-     *  )
-     */
-    public function register(Request $request)
-    {
-    }
-
-    /**
-     * @OA\Post(
      *      path="/api/v1/login",
      *      summary="Login via login",
      *      tags={"Auth"},

@@ -14,62 +14,6 @@ class AuthControllerTest extends TestCase
     /**
      * @return void
      */
-    public function test_register_successfully(): void
-    {
-        $payload = [
-            'login' => 'TestUser',
-            'email' => 'test@test.com',
-            'password' => 'password123',
-        ];
-
-        $response = $this->postJson('/api/v1/register', $payload);
-
-        $response->assertStatus(201)
-            ->assertJson(['message' => 'User registered successfully.']);
-
-        $this->assertDatabaseHas('users', [
-            'email' => 'test@test.com',
-        ]);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_register_with_invalid_data(): void
-    {
-        $payload = [
-            'login' => '',
-            'email' => 'invalid-email',
-            'password' => 'short',
-        ];
-
-        $response = $this->postJson('/api/v1/register', $payload);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['login', 'email', 'password']);
-    }
-
-    /**
-     * @return void
-     */
-    public function test_register_with_duplicate_email(): void
-    {
-        User::factory()->create(['email' => 'test@test.com']);
-
-        $payload = [
-            'login' => 'TestUser',
-            'email' => 'test@test.com',
-            'password' => 'password123',
-        ];
-
-        $response = $this->postJson('/api/v1/register', $payload);
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
-    }
-
-    /**
-     * @return void
-     */
     public function test_login_successfully(): void
     {
         User::factory()->create([

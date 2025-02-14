@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -13,24 +12,6 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthController extends Controller
 {
-    /**
-     * @param RegisterRequest $request
-     * @return JsonResponse
-     */
-    public function register(RegisterRequest $request): JsonResponse
-    {
-        /** @var string $password */
-        $password = $request->input('password');
-
-        $user = User::create([
-            'login' => $request->input('login'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($password),
-        ]);
-
-        return response()->json(['message' => 'User registered successfully.'], ResponseAlias::HTTP_CREATED);
-    }
-
     /**
      * @param LoginRequest $request
      * @return JsonResponse
