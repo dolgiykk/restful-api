@@ -4,16 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserController extends Controller
 {
+    private UserService $userService;
+
     const int DEFAULT_PER_PAGE = 10;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
 
     /**
      * @param Request $request
@@ -22,19 +28,8 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         $perPage = (int) $request->query('per_page') ?: self::DEFAULT_PER_PAGE;
-        $users = User::query()->paginate($perPage);
 
-        return response()->json([
-            'data' => UserResource::collection($users),
-            'pagination' => [
-                'total' => $users->total(),
-                'per_page' => $users->perPage(),
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'next_page_url' => $users->nextPageUrl(),
-                'prev_page_url' => $users->previousPageUrl(),
-            ],
-        ], ResponseAlias::HTTP_OK);
+        return response()->json($this->userService->getAll($perPage), ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -43,13 +38,13 @@ class UserController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $user = User::find($id);
-
-        if (! $user) {
-            return response()->json(['message' => 'User not found.'], ResponseAlias::HTTP_NOT_FOUND);
+        try {
+            $userResource = $this->userService->getOne($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
         }
 
-        return response()->json(new UserResource($user), ResponseAlias::HTTP_OK);
+        return response()->json($userResource, ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -58,16 +53,12 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
-        /** @var string $password */
-        $password = $request->input('password');
+        $user = $this->userService->createUser($request->validated());
 
-        $user = User::create([
-            'login' => $request->input('login'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($password),
-        ]);
-
-        return response()->json(['message' => 'User created successfully.'], ResponseAlias::HTTP_CREATED);
+        return response()->json([
+            'message' => 'User created successfully.',
+            'user' => $user,
+        ], ResponseAlias::HTTP_CREATED);
     }
 
     /**
@@ -76,17 +67,15 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
-        $user = User::find($id);
-
-        if (! $user) {
-            return response()->json(['message' => 'User not found.'], ResponseAlias::HTTP_NOT_FOUND);
+        try {
+            $user = $this->userService->updateUser($request->validated(), $id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
         }
-
-        $user->update($request->validated());
 
         return response()->json([
             'message' => 'User updated successfully.',
-            'user' => new UserResource($user),
+            'user' => $user,
         ], ResponseAlias::HTTP_OK);
     }
 
@@ -96,13 +85,11 @@ class UserController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        $user = User::find($id);
-
-        if (! $user) {
-            return response()->json(['message' => 'User not found.'], ResponseAlias::HTTP_NOT_FOUND);
+        try {
+            $this->userService->deleteUser($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
         }
-
-        $user->delete();
 
         return response()->json(['message' => 'User deleted successfully.'], ResponseAlias::HTTP_OK);
     }

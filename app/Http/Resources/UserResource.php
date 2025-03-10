@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property int $id
+ */
 class UserResource extends JsonResource
 {
     /**
@@ -34,6 +37,7 @@ class UserResource extends JsonResource
             'second_name' =>$this->user->second_name,
             'birthday'=>$this->user->birthday,
             'sex'=>$this->user->sex,
+            'link' => route('users.show', ['user' => $this->user->id]),
         ];
     }
 }

@@ -40,8 +40,15 @@ class UserControllerTest extends TestCase
 
         $response = $this->postJson('/api/v1/users', $payload);
 
+        $user = User::where('email', 'test@test.com')->first();
+
         $response->assertStatus(201)
-            ->assertJson(['message' => 'User created successfully.']);
+            ->assertJson(['message' => 'User created successfully.'])
+            ->assertJsonStructure([
+                'message',
+                'user' => array_keys((new UserResource($user))->toArray(new Request())),
+
+            ]);
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@test.com',
