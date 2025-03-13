@@ -23,6 +23,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/users', UserController::class);
 
     Route::post('/email/verify/send', [EmailVerificationController::class, 'send'])
+        ->middleware('auth:sanctum')
         ->name('verification.send');
     Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
         ->name('verification.verify');
