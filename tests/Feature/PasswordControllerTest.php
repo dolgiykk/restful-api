@@ -147,7 +147,7 @@ class PasswordControllerTest extends TestCase
         $response = $this->postJson('/api/v1/change-password', $payload);
 
         $response->assertStatus(200)
-            ->assertJson(['message' => 'Password changed successfully. All sessions was closed.']);
+            ->assertJson(['message' => 'Password changed successfully. All sessions were closed.']);
     }
 
     /**

@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Helpers\QRCodeHelper;
 use App\Models\User;
+use App\Traits\UserAuthenticate;
 use PragmaRX\Google2FA\Google2FA;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class TwoFactorAuthService
 {
+    use UserAuthenticate;
+
     /**
      * @param User|null $user
      * @return array<mixed>
@@ -18,13 +21,11 @@ class TwoFactorAuthService
      */
     public function enable2FA(?User $user):array
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         if ($user->two_factor_secret && $user->two_factor_qr_code_url) {
             return [
                 [
@@ -67,13 +68,11 @@ class TwoFactorAuthService
      */
     public function verify2FA(?User $user, array $data):array
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         /** @var string $twoFactorSecret */
         $twoFactorSecret = $user->two_factor_secret;
 
@@ -85,13 +84,13 @@ class TwoFactorAuthService
 
         if (! $isValid) {
             return [
-                ['message' => 'Wrong verification code.'],
+                ['message' => __('auth.two_factor_auth.wrong_code')],
                 ResponseAlias::HTTP_UNAUTHORIZED,
             ];
         }
 
         return [
-            ['message' => '2FA verified successfully.'],
+            ['message' => __('auth.two_factor_auth.verified_successfully')],
             ResponseAlias::HTTP_OK,
         ];
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Services\PersonalAccessTokenService;
+use App\Services\Auth\PersonalAccessTokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

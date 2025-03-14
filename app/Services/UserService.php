@@ -30,6 +30,10 @@ class UserService
         ];
     }
 
+    /**
+     * @param int $id
+     * @return UserResource
+     */
     public function getOne(int $id): UserResource
     {
         $user = User::find($id);
@@ -63,7 +67,7 @@ class UserService
         $user = User::find($id);
 
         if (! $user) {
-            throw new ModelNotFoundException('User not found.');
+            throw new ModelNotFoundException(__('user.not_found'));
         }
 
         $user->update($data);
@@ -80,7 +84,7 @@ class UserService
         $user = User::find($id);
 
         if (! $user) {
-            throw new ModelNotFoundException('User not found.');
+            throw new ModelNotFoundException(__('user.not_found'));
         }
 
         return $user->delete();

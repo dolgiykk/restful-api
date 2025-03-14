@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Models\User;
+use App\Traits\UserAuthenticate;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PasswordService
 {
+    use UserAuthenticate;
+
     /**
      * @param User|null $user
      * @param array<string, mixed> $data
@@ -18,23 +21,21 @@ class PasswordService
      */
     public function change(?User $user, array $data)
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         if (! Hash::check($data['password'], $user->password)) {
             return [
-                ['message' => 'Wrong password.'],
+                ['message' => __('auth.password.wrong_password')],
                 ResponseAlias::HTTP_UNAUTHORIZED,
             ];
         }
 
         if ($data['password'] === $data['new_password']) {
             return [
-                ['message' => 'Old and new passwords matched.'],
+                ['message' => __('auth.password.old_new_match')],
                 ResponseAlias::HTTP_UNPROCESSABLE_ENTITY,
             ];
         }
@@ -45,7 +46,7 @@ class PasswordService
             ->delete();
 
         return [
-            ['message' => 'Password changed successfully. All sessions was closed.'],
+            ['message' => __('auth.password.changed_successfully')],
             ResponseAlias::HTTP_OK,
         ];
     }
@@ -77,7 +78,7 @@ class PasswordService
 
         if (! $resetRecord || ! isset($resetRecord->token) || ! Hash::check($token, $resetRecord->token)) {
             return [
-                ['errors' => 'Invalid or expired token.'],
+                ['errors' => __('auth.password.invalid_token')],
                 ResponseAlias::HTTP_UNPROCESSABLE_ENTITY,
             ];
         }
@@ -102,8 +103,8 @@ class PasswordService
 
         if (! $resetRecord || ! isset($resetRecord->token) || ! Hash::check($token, $resetRecord->token)) {
             return [
-                ['errors' => 'Invalid or expired token.'],
-                ResponseAlias::HTTP_BAD_REQUEST,
+                ['errors' => __('auth.password.invalid_token')],
+                ResponseAlias::HTTP_UNPROCESSABLE_ENTITY,
             ];
         }
 

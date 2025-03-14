@@ -1,29 +1,30 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Models\User;
+use App\Traits\UserAuthenticate;
 use Illuminate\Auth\Events\Verified;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class EmailVerificationService
 {
+    use UserAuthenticate;
+
     /**
      * @param User|null $user
      * @return array<mixed>
      */
     public function send(?User $user): array
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         if ($user->hasVerifiedEmail()) {
             return [
-                ['message' => 'Email already verified.'],
+                ['message' => __('auth.email_verification.already_verified')],
                 ResponseAlias::HTTP_OK,
             ];
         }
@@ -31,7 +32,7 @@ class EmailVerificationService
         $user->sendEmailVerificationNotification();
 
         return [
-            ['message' => 'Verification email sent.'],
+            ['message' => __('auth.email_verification.verification_sent')],
             ResponseAlias::HTTP_ACCEPTED,
         ];
     }
@@ -45,14 +46,14 @@ class EmailVerificationService
     {
         if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
             return [
-                ['message' => 'Invalid verification link.'],
+                ['message' => __('auth.email_verification.invalid_link')],
                 ResponseAlias::HTTP_BAD_REQUEST,
             ];
         }
 
         if ($user->hasVerifiedEmail()) {
             return [
-                ['message' => 'Email already verified.'],
+                ['message' => __('auth.email_verification.already_verified')],
                 ResponseAlias::HTTP_OK,
             ];
         }
@@ -62,7 +63,7 @@ class EmailVerificationService
         }
 
         return [
-            ['message' => 'Email has been successfully verified.'],
+            ['message' => __('auth.email_verification.verified_successfully')],
             ResponseAlias::HTTP_OK,
         ];
     }

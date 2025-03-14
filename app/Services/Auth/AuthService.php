@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +19,14 @@ class AuthService
 
         if (! $user) {
             return [
-                ['message' => 'User not found.'],
+                ['message' => __('auth.auth.user_not_found')],
                 ResponseAlias::HTTP_UNAUTHORIZED,
             ];
         }
 
         if (! Hash::check($data['password'], $user->password)) {
             return [
-                ['message' => 'Wrong password.'],
+                ['message' => __('auth.auth.wrong_password')],
                 ResponseAlias::HTTP_UNAUTHORIZED,
             ];
         }
@@ -34,7 +34,10 @@ class AuthService
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            ['token' => $token],
+            [
+                'token' => $token,
+                'message' => __('auth.auth.logged_in'),
+            ],
             ResponseAlias::HTTP_OK,
         ];
     }
@@ -47,7 +50,7 @@ class AuthService
         Auth::user()?->tokens()->delete();
 
         return [
-            ['message' => 'Logged out successfully.'],
+            ['message' => __('auth.auth.logged_out')],
             ResponseAlias::HTTP_OK,
         ];
     }

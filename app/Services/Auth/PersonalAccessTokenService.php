@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Models\User;
+use App\Traits\UserAuthenticate;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PersonalAccessTokenService
 {
+    use UserAuthenticate;
+
     /**
      * @param User|null $user
      * @param int $perPage
@@ -14,13 +17,11 @@ class PersonalAccessTokenService
      */
     public function getUserTokens(?User $user, int $perPage): array
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         $tokens = $user->tokens()->paginate($perPage);
 
         return [
@@ -44,19 +45,17 @@ class PersonalAccessTokenService
      */
     public function revokeOtherTokens(?User $user): array
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         $user->tokens()
             ->where('id', '!=', $user->currentAccessToken()->id)
             ->delete();
 
         return [
-            ['message' => 'All sessions on other devices were closed successfully.'],
+            ['message' => __('auth.personal_access_token.session_closed')],
             ResponseAlias::HTTP_OK,
         ];
     }
@@ -68,38 +67,36 @@ class PersonalAccessTokenService
      */
     public function destroy(?User $user, ?int $tokenId): array
     {
-        if (! $user?->currentAccessToken()) {
-            return [
-                ['message' => 'Unauthenticated.'],
-                ResponseAlias::HTTP_UNAUTHORIZED,
-            ];
+        if ($checkAuth = $this->ensureAuthenticated($user)) {
+            return $checkAuth;
         }
 
+        /** @var User $user */
         $token = $user->tokens()->where('id', $tokenId)->first();
 
         if (! $token) {
             return [
-                ['message' => 'Token not found.'],
+                ['message' => __('auth.personal_access_token.token_not_found')],
                 ResponseAlias::HTTP_NOT_FOUND,
             ];
         }
 
         if ($tokenId == $user->currentAccessToken()->id) {
             return [
-                ['message' => 'Cannot delete current token.'],
+                ['message' => __('auth.personal_access_token.cannot_delete_current')],
                 ResponseAlias::HTTP_FORBIDDEN,
             ];
         }
 
         if ($token->delete()) {
             return [
-                ['message' => 'Token deleted successfully.'],
+                ['message' => __('auth.personal_access_token.deleted_successfully')],
                 ResponseAlias::HTTP_OK,
             ];
         }
 
         return [
-            ['message' => 'Token could not be deleted.'],
+            ['message' => __('auth.personal_access_token.delete_failed')],
             ResponseAlias::HTTP_UNPROCESSABLE_ENTITY,
         ];
     }

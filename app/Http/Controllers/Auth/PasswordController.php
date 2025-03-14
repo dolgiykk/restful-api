@@ -7,7 +7,7 @@ use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\SendResetTokenRequest;
 use App\Http\Requests\Auth\ShowResetPasswordFormRequest;
-use App\Services\PasswordService;
+use App\Services\Auth\PasswordService;
 use Illuminate\Http\JsonResponse;
 
 class PasswordController extends Controller
