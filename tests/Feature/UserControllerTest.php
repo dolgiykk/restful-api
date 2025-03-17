@@ -43,7 +43,7 @@ class UserControllerTest extends TestCase
         $user = User::where('email', 'test@test.com')->first();
 
         $response->assertStatus(201)
-            ->assertJson(['message' => 'User created successfully.'])
+            ->assertJson(['message' => 'Created successfully.'])
             ->assertJsonStructure([
                 'message',
                 'user' => array_keys((new UserResource($user))->toArray(new Request())),
@@ -248,7 +248,7 @@ class UserControllerTest extends TestCase
 
         $response->assertStatus(ResponseAlias::HTTP_OK)
             ->assertJson([
-                'message' => 'User deleted successfully.',
+                'message' => 'Deleted successfully.',
             ]);
 
         $this->assertDatabaseMissing('users', [

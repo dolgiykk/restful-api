@@ -56,7 +56,7 @@ class UserController extends Controller
         $user = $this->userService->createUser($request->validated());
 
         return response()->json([
-            'message' => 'User created successfully.',
+            'message' => __('crud.created_success'),
             'user' => $user,
         ], ResponseAlias::HTTP_CREATED);
     }
@@ -74,7 +74,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => 'User updated successfully.',
+            'message' => __('crud.update.success'),
             'user' => $user,
         ], ResponseAlias::HTTP_OK);
     }
@@ -91,6 +91,6 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
         }
 
-        return response()->json(['message' => 'User deleted successfully.'], ResponseAlias::HTTP_OK);
+        return response()->json(['message' => __('crud.deleted_success')], ResponseAlias::HTTP_OK);
     }
 }
