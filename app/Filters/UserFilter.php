@@ -14,6 +14,7 @@ class UserFilter extends QueryFilter
             'email' => 'like',
             'first_name' => 'like',
             'last_name' => 'like',
+            'second_name' => 'like',
             'login' => 'like',
             'sex' => 'exact',
             'birthday' => 'date',
