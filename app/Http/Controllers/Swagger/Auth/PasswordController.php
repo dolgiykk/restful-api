@@ -9,9 +9,9 @@ class PasswordController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/api/v1/change",
+     *      path="/api/v1/change-password",
      *      summary="Change password",
-     *      tags={"Auth"},
+     *      tags={"Password"},
      *      security={{"bearerAuth":{}}},
      *
      *      @OA\RequestBody(
@@ -56,7 +56,7 @@ class PasswordController extends Controller
      * @OA\Post(
      *        path="/api/v1/forgot-password",
      *        summary="Create token and send mail to reset password",
-     *        tags={"Auth"},
+     *        tags={"Password"},
      *
      *        @OA\RequestBody(
      *             @OA\JsonContent(
@@ -90,7 +90,7 @@ class PasswordController extends Controller
      * @OA\Get(
      *       path="/api/v1/reset-password",
      *       summary="Display reset password form",
-     *       tags={"Auth"},
+     *       tags={"Password"},
      *
      *       @OA\Parameter(
      *           name="email",
@@ -139,8 +139,8 @@ class PasswordController extends Controller
     /**
      * @OA\Post(
      *      path="/api/v1/reset-password",
-     *      summary="Create token and send mail to reset password",
-     *      tags={"Auth"},
+     *      summary="Reset password",
+     *      tags={"Password"},
      *
      *      @OA\RequestBody(
      *          @OA\JsonContent(

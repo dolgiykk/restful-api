@@ -6,72 +6,6 @@
     },
     "paths": {
         "/api/v1/": {},
-        "/api/v1/register": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Register user",
-                "operationId": "deb636b2835e06bbaf42f5d1c09c4fb3",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "login": {
-                                        "type": "string",
-                                        "example": "SomeName"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "some@email.ru"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "example": "password123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "User registered successfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "User registered successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The email has already been taken."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/login": {
             "post": {
                 "tags": [
@@ -185,7 +119,7 @@
         "/api/v1/email/verify/send": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Email"
                 ],
                 "summary": "Send Verification Email",
                 "description": "Send an email verification link to the authenticated user.",
@@ -250,7 +184,7 @@
         "/api/v1/email/verify/{id}/{hash}": {
             "get": {
                 "tags": [
-                    "Auth"
+                    "Email"
                 ],
                 "summary": "Verify Email",
                 "description": "Verify the user's email using the link from the verification email.",
@@ -314,13 +248,13 @@
                 }
             }
         },
-        "/api/v1/change": {
+        "/api/v1/change-password": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Password"
                 ],
                 "summary": "Change password",
-                "operationId": "22a428164a6a1b74f627518af3eecfc6",
+                "operationId": "6686cdba781bb91b0b5ad30e8d758fc6",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -404,7 +338,7 @@
         "/api/v1/forgot-password": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Password"
                 ],
                 "summary": "Create token and send mail to reset password",
                 "operationId": "552675e14da65d66551d55ea29926566",
@@ -462,7 +396,7 @@
         "/api/v1/reset-password": {
             "get": {
                 "tags": [
-                    "Auth"
+                    "Password"
                 ],
                 "summary": "Display reset password form",
                 "operationId": "86d122d3e92e7bb1370c438fab3edd78",
@@ -529,9 +463,9 @@
             },
             "post": {
                 "tags": [
-                    "Auth"
+                    "Password"
                 ],
-                "summary": "Create token and send mail to reset password",
+                "summary": "Reset password",
                 "operationId": "c5eaac378985e82be3b5429c3c8cac17",
                 "requestBody": {
                     "content": {
@@ -611,9 +545,9 @@
         "/api/v1/tokens": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Access token"
                 ],
-                "summary": "Close other sessions",
+                "summary": "Tokens list",
                 "operationId": "77c56378571f203a07dd24d4a9e63ab5",
                 "responses": {
                     "200": {
@@ -735,7 +669,7 @@
         "/api/v1/logout-other-devices": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Access token"
                 ],
                 "summary": "Logout other devices",
                 "operationId": "ed57895451e44df6f53f56424c22ea66",
@@ -783,7 +717,7 @@
         "/api/v1/logout-device": {
             "delete": {
                 "tags": [
-                    "Auth"
+                    "Access token"
                 ],
                 "summary": "Logout device by personal access token ID",
                 "operationId": "2f54558251fc8cae5d8e4b6cdbf591ea",
@@ -801,7 +735,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Token successfully deleted.",
+                        "description": "Token deleted successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1130,6 +1064,198 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create user",
+                "operationId": "15bca0772c6c5b926d69e14ac1b1d3db",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "SomeName"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "some@email.ru"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User created successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email has already been taken."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user",
+                "operationId": "5452b165d47d655136c267bfa873fb4c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "login": {
+                                        "type": "string",
+                                        "example": "login"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@test.com"
+                                    },
+                                    "email_verified_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2020-01-27T17:50:45Z"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2020-01-27T17:50:45Z"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2020-01-27T17:50:45Z"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "second_name": {
+                                        "type": "string",
+                                        "example": "Smith"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1995-05-16"
+                                    },
+                                    "sex": {
+                                        "type": "string",
+                                        "example": "male"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User created successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email has already been taken."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/users/{id}": {
@@ -1138,7 +1264,7 @@
                     "User"
                 ],
                 "summary": "Get user by ID",
-                "operationId": "6404ae3f3a6795408390de14ce5ba1dd",
+                "operationId": "6c5901986c1d443d574ecc1b8b0c00a6",
                 "parameters": [
                     {
                         "name": "id",
@@ -1236,6 +1362,18 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Email",
+            "description": "Email"
+        },
+        {
+            "name": "Password",
+            "description": "Password"
+        },
+        {
+            "name": "Access token",
+            "description": "Access token"
         },
         {
             "name": "User",

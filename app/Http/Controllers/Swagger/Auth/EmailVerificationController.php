@@ -12,7 +12,7 @@ class EmailVerificationController extends Controller
      *       path="/api/v1/email/verify/send",
      *       summary="Send Verification Email",
      *       description="Send an email verification link to the authenticated user.",
-     *       tags={"Auth"},
+     *       tags={"Email"},
      *       security={{"bearerAuth":{}}},
      *
      *       @OA\Response(
@@ -49,7 +49,7 @@ class EmailVerificationController extends Controller
      *       path="/api/v1/email/verify/{id}/{hash}",
      *       summary="Verify Email",
      *       description="Verify the user's email using the link from the verification email.",
-     *       tags={"Auth"},
+     *       tags={"Email"},
      *
      *       @OA\Parameter(
      *           name="id",

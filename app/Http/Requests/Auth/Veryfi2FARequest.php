@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Request;
 use App\Traits\ValidationTrait;
-use Illuminate\Foundation\Http\FormRequest;
 
-class Veryfi2FARequest extends FormRequest
+class Veryfi2FARequest extends Request
 {
     use ValidationTrait;
 
@@ -17,13 +17,5 @@ class Veryfi2FARequest extends FormRequest
         return [
             'two_factor_code' => 'numeric|required',
         ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
     }
 }

@@ -101,7 +101,103 @@ class UserController extends Controller
      *      )
      *  )
      */
-    public function getUser(int $id)
+    public function show(int $id)
+    {
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/v1/users",
+     *      summary="Create user",
+     *      tags={"User"},
+     *
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="login", type="string", example="SomeName"),
+     *              @OA\Property(property="email", type="string", example="some@email.ru"),
+     *              @OA\Property(property="password", type="string", example="password123"),
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=201,
+     *          description="User created successfully.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="User created successfully.")
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation error.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="The email has already been taken.")
+     *          )
+     *      ),
+     *  )
+     */
+    public function store(Request $request)
+    {
+    }
+
+    /**
+     * @OA\Patch(
+     *      path="/api/v1/users",
+     *      summary="Update user",
+     *      tags={"User"},
+     *
+     *     @OA\Parameter(
+     *           name="id",
+     *           in="path",
+     *           required=true,
+     *           description="User ID",
+     *           @OA\Schema(type="integer", example=1)
+     *       ),
+     *
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="id", type="integer", example=1),
+     *              @OA\Property(property="login", type="string", example="login"),
+     *              @OA\Property(property="email", type="string", example="test@test.com"),
+     *              @OA\Property(property="email_verified_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
+     *              @OA\Property(property="created_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
+     *              @OA\Property(property="updated_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
+     *              @OA\Property(property="first_name", type="string", example="John"),
+     *              @OA\Property(property="last_name", type="string", example="Doe"),
+     *              @OA\Property(property="second_name", type="string", example="Smith"),
+     *              @OA\Property(property="birthday", type="string", format="date", example="1995-05-16"),
+     *              @OA\Property(property="sex", type="string", example="male"),
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=201,
+     *          description="User updated successfully.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="User created successfully.")
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation error.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="The email has already been taken.")
+     *          )
+     *      ),
+     *
+     *     @OA\Response(
+     *           response=404,
+     *           description="User not found",
+     *           @OA\JsonContent(
+     *               @OA\Property(property="message", type="string", example="User not found.")
+     *           )
+     *       )
+     *  )
+     */
+    public function update(Request $request)
     {
     }
 }

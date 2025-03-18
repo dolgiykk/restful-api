@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Request;
 use App\Traits\ValidationTrait;
-use Illuminate\Foundation\Http\FormRequest;
 
-class SendResetTokenRequest extends FormRequest
+class SendResetTokenRequest extends Request
 {
     use ValidationTrait;
 
@@ -17,13 +17,5 @@ class SendResetTokenRequest extends FormRequest
         return [
             'email' => 'required|string|email|exists:users,email',
         ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
     }
 }
