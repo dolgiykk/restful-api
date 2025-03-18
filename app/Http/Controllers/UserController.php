@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $perPage = (int) $request->query('per_page') ?: self::DEFAULT_PER_PAGE;
 
-        return response()->json($this->userService->getAll($perPage), ResponseAlias::HTTP_OK);
+        return response()->json($this->userService->getAll($perPage, $request), ResponseAlias::HTTP_OK);
     }
 
     /**

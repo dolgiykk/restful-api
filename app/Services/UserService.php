@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -13,9 +14,11 @@ class UserService
      * @param int $perPage
      * @return array<mixed>
      */
-    public function getAll(int $perPage = 10): array
+    public function getAll(int $perPage, Request $request): array
     {
-        $users = User::query()->paginate($perPage);
+        $users = User::query()
+            ->filter($request)
+            ->paginate($perPage);
 
         return [
             'data' => UserResource::collection($users)->resolve(),
