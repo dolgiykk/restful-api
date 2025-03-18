@@ -1,72 +1,91 @@
+version: "3.8"
+
 services:
-  app:
-    image: php:8.3-fpm
-    build:
-      context: .
-      dockerfile: _docker/app/Dockerfile
-    container_name: restfulapi-app
-    volumes:
-      - ./:/var/www
-    networks:
-      - restfulapi-network
-    depends_on:
-      - db
+    app:
+        image: php:8.3-fpm
+        build:
+            context: .
+            dockerfile: _docker/app/Dockerfile
+        container_name: restfulapi-app
+        volumes:
+            - ./:/var/www
+        networks:
+            - restfulapi-network
+        depends_on:
+            - db
+            - redis
 
-  nginx:
-    image: nginx:latest
-    container_name: restfulapi-nginx
-    volumes:
-      - ./:/var/www
-      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
-    ports:
-      - "8080:80"
-    depends_on:
-      - app
-    networks:
-      - restfulapi-network
+    nginx:
+        image: nginx:latest
+        container_name: restfulapi-nginx
+        volumes:
+            - ./:/var/www
+            - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
+        ports:
+            - "8080:80"
+        depends_on:
+            - app
+        networks:
+            - restfulapi-network
 
-  db:
-    image: postgres:15
-    container_name: restfulapi-db
-    restart: always
-    volumes:
-      - ./tmp/db:/var/lib/postgresql
-      - pg_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: '${DB_DATABASE}'
-      POSTGRES_USER: '${DB_USERNAME}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD}'
-    ports:
-      - "5432:5432"
-    networks:
-      - restfulapi-network
+    db:
+        image: postgres:15
+        container_name: restfulapi-db
+        restart: always
+        volumes:
+            - ./tmp/db:/var/lib/postgresql
+            - pg_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD}'
+        ports:
+            - "5432:5432"
+        networks:
+            - restfulapi-network
 
-  test-db:
-    image: postgres:15
-    container_name: test-db
-    restart: always
-    environment:
-        POSTGRES_DB: 'test-db'
-        POSTGRES_USER: 'root'
-        POSTGRES_PASSWORD: '163452qw'
-    ports:
-      - "5433:5432"
-    networks:
-      - restfulapi-network
+    test-db:
+        image: postgres:15
+        container_name: test-db
+        restart: always
+        environment:
+            POSTGRES_DB: 'test-db'
+            POSTGRES_USER: 'root'
+            POSTGRES_PASSWORD: '163452qw'
+        ports:
+            - "5433:5432"
+        networks:
+            - restfulapi-network
 
-  mailhog:
-    image: 'mailhog/mailhog:latest'
-    container_name: restfulapi-mailhog
-    ports:
-      - "8025:8025"
-      - "1025:1025"
-    networks:
-        - restfulapi-network
+    mailhog:
+        image: mailhog/mailhog:latest
+        container_name: restfulapi-mailhog
+        ports:
+            - "8025:8025"
+            - "1025:1025"
+        networks:
+            - restfulapi-network
+
+    redis:
+        image: redis:alpine
+        container_name: restfulapi-redis
+        ports:
+            - "6379:6379"
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+            retries: 3
+            timeout: 5s
+        volumes:
+            - redis_data:/data
+        networks:
+            - restfulapi-network
 
 networks:
-  restfulapi-network:
-    driver: bridge
+    restfulapi-network:
+        driver: bridge
 
 volumes:
     pg_data:
+        driver: local
+    redis_data:
         driver: local
