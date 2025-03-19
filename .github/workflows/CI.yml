@@ -20,6 +20,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-timeout 5s --health-retries 3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
