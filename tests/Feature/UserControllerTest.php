@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\TestCase;
 
@@ -22,9 +23,21 @@ class UserControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        config(['cache.default' => 'redis_test']);
+        Cache::flush();
+
         $this->perPage = UserController::DEFAULT_PER_PAGE;
 
         User::factory()->count(15)->create();
+    }
+
+    public function tearDown(): void
+    {
+        Cache::flush();
+        config(['cache.default' => 'redis']);
+
+        parent::tearDown();
     }
 
     /**

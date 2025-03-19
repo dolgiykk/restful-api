@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -16,36 +17,48 @@ class UserService
      */
     public function getAll(int $perPage, Request $request): array
     {
-        $users = User::query()
-            ->filter($request)
-            ->paginate($perPage);
+        /** @var string $page */
+        $page = $request->query('page') ?? '1';
 
-        return [
-            'data' => UserResource::collection($users)->resolve(),
-            'pagination' => [
-                'total' => $users->total(),
-                'per_page' => $users->perPage(),
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'next_page_url' => $users->nextPageUrl(),
-                'prev_page_url' => $users->previousPageUrl(),
-            ],
-        ];
+        $filterParams = http_build_query($request->except('page', 'perPage'));
+        $cacheKey = "users:page:{$page}:per_page:{$perPage}:filters:{$filterParams}";
+
+        return Cache::tags(['users_list'])->rememberForever($cacheKey, function () use ($perPage, $request) {
+            $users = User::query()
+                ->filter($request)
+                ->paginate($perPage);
+
+            return [
+                'data' => UserResource::collection($users)->resolve(),
+                'pagination' => [
+                    'total' => $users->total(),
+                    'per_page' => $users->perPage(),
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'next_page_url' => $users->nextPageUrl(),
+                    'prev_page_url' => $users->previousPageUrl(),
+                ],
+            ];
+        });
     }
 
     /**
      * @param int $id
-     * @return UserResource
+     * @return mixed
      */
-    public function getOne(int $id): UserResource
+    public function getOne(int $id): mixed
     {
-        $user = User::find($id);
+        $cacheKey = "user:{$id}";
 
-        if (! $user) {
-            throw new ModelNotFoundException('User not found.');
-        }
+        return Cache::rememberForever($cacheKey, function () use ($id) {
+            $user = User::find($id);
 
-        return new UserResource($user);
+            if (! $user) {
+                throw new ModelNotFoundException('User not found.');
+            }
+
+            return new UserResource($user);
+        });
     }
 
     /**
@@ -56,6 +69,8 @@ class UserService
     {
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
+
+        Cache::tags(['users_list'])->flush();
 
         return new UserResource($user);
     }
@@ -75,6 +90,11 @@ class UserService
 
         $user->update($data);
 
+        Cache::lock('cache_update_lock', 10)->block(0, function () use ($id) {
+            Cache::tags(['users_list'])->flush();
+            Cache::forget("user:{$id}");
+        });
+
         return new UserResource($user);
     }
 
@@ -89,6 +109,11 @@ class UserService
         if (! $user) {
             throw new ModelNotFoundException(__('user.not_found'));
         }
+
+        Cache::lock('cache_update_lock', 10)->block(0, function () use ($id) {
+            Cache::tags(['users_list'])->flush();
+            Cache::forget("user:{$id}");
+        });
 
         return $user->delete();
     }

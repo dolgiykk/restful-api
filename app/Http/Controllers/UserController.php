@@ -74,7 +74,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => __('crud.update.success'),
+            'message' => __('crud.updated_success'),
             'user' => $user,
         ], ResponseAlias::HTTP_OK);
     }
