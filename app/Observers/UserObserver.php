@@ -12,7 +12,7 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        logger()->channel('user')->info(__('crud.created_success'), ['user_id' => $user->id]);
+        logger()->channel('user')->info(__('actions.created_success'), ['user_id' => $user->id]);
     }
 
     /**
@@ -21,7 +21,7 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        logger()->channel('user')->info(__('crud.updated_success'), ['user_id' => $user->id]);
+        logger()->channel('user')->info(__('actions.updated_success'), ['user_id' => $user->id]);
     }
 
     /**
@@ -30,6 +30,6 @@ class UserObserver
      */
     public function deleted(User $user): void
     {
-        logger()->channel('user')->info(__('crud.deleted_success'), ['user_id' => $user->id]);
+        logger()->channel('user')->info(__('actions.deleted_success'), ['user_id' => $user->id]);
     }
 }

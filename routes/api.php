@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PersonalAccessTokenController;
 use App\Http\Controllers\Auth\TwoFactorAuthController;
+use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,12 @@ Route::prefix('v1')->group(function () {
     Route::post('/change-password', [PasswordController::class, 'change'])->middleware('auth:sanctum');
 
     Route::apiResource('/users', UserController::class);
+    Route::apiResource('/addresses', AddressController::class);
+
+    Route::get('/users/{user}/addresses', [UserAddressController::class, 'getByUserId'])/*->middleware('auth:sanctum')*/;
+    Route::post('/users/{user}/addresses', [UserAddressController::class, 'attach']);
+    Route::post('/users/{user}/addresses/detach', [UserAddressController::class, 'detach']);
+    Route::post('/users/{user}/addresses/detach-all', [UserAddressController::class, 'detachAll']);
 
     Route::post('/email/verify/send', [EmailVerificationController::class, 'send'])
         ->middleware('auth:sanctum')

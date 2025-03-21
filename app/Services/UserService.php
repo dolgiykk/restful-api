@@ -13,6 +13,7 @@ class UserService
 {
     /**
      * @param int $perPage
+     * @param Request $request
      * @return array<mixed>
      */
     public function getAll(int $perPage, Request $request): array
