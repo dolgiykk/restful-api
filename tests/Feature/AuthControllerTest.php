@@ -130,7 +130,7 @@ class AuthControllerTest extends TestCase
     public function test_tokens_without_paginate_query(): void
     {
         Sanctum::actingAs($this->user);
-        $response = $this->postJson('/api/v1/tokens');
+        $response = $this->getJson('/api/v1/tokens');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -154,7 +154,7 @@ class AuthControllerTest extends TestCase
     public function test_tokens_with_custom_paginate_query(): void
     {
         Sanctum::actingAs($this->user);
-        $response = $this->postJson('/api/v1/tokens/?per_page=5');
+        $response = $this->getJson('/api/v1/tokens/?per_page=5');
 
         $response->assertStatus(200);
         $this->assertCount(5, $response->json('data'));
