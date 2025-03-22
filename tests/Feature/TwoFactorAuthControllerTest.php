@@ -31,7 +31,7 @@ class TwoFactorAuthControllerTest extends TestCase
 
         $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
 
-        $response = $this->postJson('/api/v1/enable2FA');
+        $response = $this->postJson('/api/v1/2fa/enable');
 
         $response->assertStatus(200)
             ->assertJsonStructure(['two_factor_secret', 'two_factor_qr_code_base64']);
@@ -42,7 +42,7 @@ class TwoFactorAuthControllerTest extends TestCase
      */
     public function test_enable2FA_without_authentication(): void
     {
-        $response = $this->postJson('/api/v1/enable2FA');
+        $response = $this->postJson('/api/v1/2fa/enable');
 
         $response->assertStatus(401)
             ->assertJson(['message' => 'Unauthenticated.']);
@@ -67,7 +67,7 @@ class TwoFactorAuthControllerTest extends TestCase
 
         $this->withHeader('Authorization', 'Bearer '.$currentToken->plainTextToken);
 
-        $response = $this->postJson('/api/v1/enable2FA');
+        $response = $this->postJson('/api/v1/2fa/enable');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -97,7 +97,7 @@ class TwoFactorAuthControllerTest extends TestCase
         $google2fa = new Google2FA();
         $code = $google2fa->getCurrentOtp('DAQJRAKOTDG37DVU');
 
-        $response = $this->postJson('/api/v1/verify2FA', ['two_factor_code' => $code]);
+        $response = $this->postJson('/api/v1/2fa/verify', ['two_factor_code' => $code]);
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -126,7 +126,7 @@ class TwoFactorAuthControllerTest extends TestCase
         $google2fa = new Google2FA();
         $code = $google2fa->getCurrentOtp('FAQJRAKOTDG37DVU');
 
-        $response = $this->postJson('/api/v1/verify2FA', ['two_factor_code' => $code]);
+        $response = $this->postJson('/api/v1/2fa/verify', ['two_factor_code' => $code]);
 
         $response->assertStatus(401);
         $response->assertJson(['message' => 'Wrong verification code.']);

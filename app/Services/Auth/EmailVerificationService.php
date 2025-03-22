@@ -38,12 +38,21 @@ class EmailVerificationService
     }
 
     /**
-     * @param User $user
+     * @param int $userId
      * @param string $hash
      * @return array<mixed>
      */
-    public function verify(User $user, string $hash): array
+    public function verify(int $userId, string $hash): array
     {
+        $user = User::find($userId);
+
+        if (! $user) {
+            return [
+                ['message'=> __('user.not_found')],
+                ResponseAlias::HTTP_NOT_FOUND,
+            ];
+        }
+
         if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
             return [
                 ['message' => __('auth.email_verification.invalid_link')],

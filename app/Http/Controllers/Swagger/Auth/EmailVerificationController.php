@@ -9,36 +9,36 @@ class EmailVerificationController extends Controller
 {
     /**
      * @OA\Post(
-     *       path="/api/v1/email/verify/send",
-     *       summary="Send Verification Email",
-     *       description="Send an email verification link to the authenticated user.",
-     *       tags={"Email"},
-     *       security={{"bearerAuth":{}}},
+     *     path="/api/v1/email/verify/send",
+     *     summary="Send Verification Email",
+     *     description="Send an email verification link to the authenticated user.",
+     *     tags={"Email"},
+     *     security={{"bearerAuth":{}}},
      *
-     *       @OA\Response(
-     *           response=202,
-     *           description="Verification email sent.",
-     *           @OA\JsonContent(
-     *               @OA\Property(property="message", type="string", example="Verification email sent.")
-     *           )
-     *       ),
+     *     @OA\Response(
+     *         response=202,
+     *         description="Verification email sent.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Verification email sent.")
+     *         )
+     *     ),
      *
-     *       @OA\Response(
-     *           response=200,
-     *           description="Email already verified.",
-     *           @OA\JsonContent(
-     *               @OA\Property(property="message", type="string", example="Email already verified.")
-     *           )
-     *       ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email already verified.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Email already verified.")
+     *         )
+     *     ),
      *
-     *       @OA\Response(
-     *           response=401,
-     *           description="Unauthenticated.",
-     *           @OA\JsonContent(
-     *               @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *           )
-     *       )
-     *   ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function send(Request $request)
     {

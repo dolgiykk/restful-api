@@ -34,7 +34,7 @@ class PasswordController extends Controller
      * @param SendResetTokenRequest $request
      * @return JsonResponse
      */
-    public function sendResetToken(SendResetTokenRequest $request): JsonResponse
+    public function forgot(SendResetTokenRequest $request): JsonResponse
     {
         return response()->json(...$this->passwordService->sendResetToken($request->validated()));
     }

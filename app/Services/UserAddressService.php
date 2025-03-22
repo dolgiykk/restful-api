@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Http\Resources\AddressResource;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -20,7 +19,10 @@ class UserAddressService
         $user = User::find($userId);
 
         if (! $user) {
-            throw new ModelNotFoundException(__('user.not_found'));
+            return [
+                ['message'=> __('user.not_found')],
+                ResponseAlias::HTTP_NOT_FOUND,
+            ];
         }
 
         $user->addresses()->syncWithoutDetaching($addressIds);

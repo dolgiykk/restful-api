@@ -9,17 +9,6 @@ use Illuminate\Http\Request;
 
 class AddressController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/v1/addresses",
-     *     summary="Addresses list",
-     *     tags={"Address"},
-     *
-     *     @OA\Parameter(
-     *         name=""
-     *     )
-     * )
-     */
     public function index(Request $request)
     {
     }

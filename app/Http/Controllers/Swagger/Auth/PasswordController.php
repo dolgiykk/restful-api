@@ -9,7 +9,7 @@ class PasswordController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/api/v1/change-password",
+     *      path="/api/v1/password/change",
      *      summary="Change password",
      *      tags={"Password"},
      *      security={{"bearerAuth":{}}},
@@ -25,17 +25,17 @@ class PasswordController extends Controller
      *
      *      @OA\Response(
      *          response=200,
-     *          description="Change password and drop all sessions.",
+     *          description="Password successfully changed and all sessions (except the current one) were closed.",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Password changed successfully. All sessions was closed.")
+     *              @OA\Property(property="message", type="string", example="Password changed successfully. All sessions were closed.")
      *          )
      *      ),
      *
      *      @OA\Response(
      *          response=422,
-     *          description="Old and new passwords matched.",
+     *          description="Old password and new password match.",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Old and new passwords matched.")
+     *              @OA\Property(property="message", type="string", example="Old password and new password cannot be the same.")
      *          )
      *      ),
      *
@@ -54,20 +54,20 @@ class PasswordController extends Controller
 
     /**
      * @OA\Post(
-     *        path="/api/v1/forgot-password",
-     *        summary="Create token and send mail to reset password",
+     *        path="/api/v1/password/forgot",
+     *        summary="Generate reset token and send reset password email",
      *        tags={"Password"},
      *
      *        @OA\RequestBody(
      *             @OA\JsonContent(
      *                 type="object",
-     *                 @OA\Property(property="email", type="string", example="some@email.ru"),
+     *                 @OA\Property(property="email", type="string", example="some@email.ru", format="email"),
      *             )
      *        ),
      *
      *        @OA\Response(
      *             response=200,
-     *             description="Send reset password mail.",
+     *             description="Password reset email sent successfully.",
      *             @OA\JsonContent(
      *                 @OA\Property(property="message", type="string", example="We have emailed your password reset link."),
      *             )
@@ -75,21 +75,21 @@ class PasswordController extends Controller
      *
      *        @OA\Response(
      *              response=422,
-     *              description="The selected email is invalid.",
+     *              description="The email is invalid or not registered.",
      *              @OA\JsonContent(
-     *                  @OA\Property(property="message", type="string", example="Invalid or expired token.")
+     *                  @OA\Property(property="message", type="string", example="The selected email is invalid or not registered.")
      *              )
      *        ),
      *    )
      */
-    public function sendResetToken(Request $request)
+    public function forgot(Request $request)
     {
     }
 
     /**
      * @OA\Get(
-     *       path="/api/v1/reset-password",
-     *       summary="Display reset password form",
+     *       path="/api/v1/password/reset",
+     *       summary="Display password reset form with valid token",
      *       tags={"Password"},
      *
      *       @OA\Parameter(
@@ -99,6 +99,7 @@ class PasswordController extends Controller
      *           required=true,
      *           @OA\Schema(
      *               type="string",
+     *               format="email",
      *               example="user@example.com"
      *           )
      *       ),
@@ -116,7 +117,7 @@ class PasswordController extends Controller
      *
      *       @OA\Response(
      *           response=200,
-     *           description="The password reset form is successfully displayed",
+     *           description="Password reset token and email are valid",
      *           @OA\JsonContent(
      *               @OA\Property(property="email", type="string", example="user@example.com"),
      *               @OA\Property(property="token", type="string", example="2bcc51a1eae1daef3b8390a2d9dd5ba00d0ffa8641ea671da4a274b8bac325")
@@ -125,36 +126,36 @@ class PasswordController extends Controller
      *
      *       @OA\Response(
      *           response=422,
-     *           description="Invalid or expired token",
+     *           description="The provided token is invalid or has expired",
      *           @OA\JsonContent(
      *               @OA\Property(property="errors", type="string", example="Invalid or expired token.")
      *           )
      *       ),
      *   )
      */
-    public function showResetPasswordForm(Request $request)
+    public function showResetForm(Request $request)
     {
     }
 
     /**
      * @OA\Post(
-     *      path="/api/v1/reset-password",
-     *      summary="Reset password",
+     *      path="/api/v1/password/reset",
+     *      summary="Reset the user's password",
      *      tags={"Password"},
      *
      *      @OA\RequestBody(
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property(property="email", type="string", example="some@email.ru"),
-     *              @OA\Property(property="token", type="string"),
-     *              @OA\Property(property="password", type="string"),
-     *              @OA\Property(property="password_confirmation", type="string")
+     *              @OA\Property(property="token", type="string", example="2bcc51a1eae1daef3b8390a2d9dd5ba00d0ffa8641ea671da4a274b8bac325"),
+     *              @OA\Property(property="password", type="string", example="newPassword123"),
+     *              @OA\Property(property="password_confirmation", type="string", example="newPassword123")
      *          )
      *      ),
      *
      *      @OA\Response(
      *          response=200,
-     *          description="Send reset password mail.",
+     *          description="Password has been successfully reset.",
      *          @OA\JsonContent(
      *              @OA\Property(property="message", type="string", example="Your password has been reset.")
      *          )
@@ -162,9 +163,9 @@ class PasswordController extends Controller
      *
      *      @OA\Response(
      *          response=422,
-     *          description="The selected email is invalid.",
+     *          description="The selected email is invalid or the password reset process failed.",
      *          @OA\JsonContent(
-     *              @OA\Property(property="errors", type="object")
+     *              @OA\Property(property="errors", type="string", example="The provided email is not registered.")
      *          )
      *      ),
      *

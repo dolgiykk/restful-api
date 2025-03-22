@@ -47,7 +47,7 @@ class AuthService
      */
     public function logout(): array
     {
-        Auth::user()?->tokens()->delete();
+        Auth::user()?->currentAccessToken()->delete();
 
         return [
             ['message' => __('auth.auth.logged_out')],

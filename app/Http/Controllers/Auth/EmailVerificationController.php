@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Services\Auth\EmailVerificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,15 +27,14 @@ class EmailVerificationController extends Controller
 
     /**
      * @param Request $request
+     * @param int $userId
      * @return JsonResponse
      */
-    public function verify(Request $request): JsonResponse
+    public function verify(Request $request, int $userId): JsonResponse
     {
-        $user = User::findOrFail($request->route('id'));
-
         /** @var string $hash */
         $hash = $request->route('hash');
 
-        return response()->json(...$this->emailVerificationService->verify($user, $hash));
+        return response()->json(...$this->emailVerificationService->verify($userId, $hash));
     }
 }

@@ -7,8 +7,12 @@ services:
             context: .
             dockerfile: _docker/app/Dockerfile
         container_name: restfulapi-app
+        environment:
+            - PHP_IDE_CONFIG=serverName=localhost
         volumes:
             - ./:/var/www
+        extra_hosts:
+            - "host.docker.internal:172.17.0.1"
         networks:
             - restfulapi-network
         depends_on:

@@ -14,6 +14,7 @@
                 "summary": "Login via login",
                 "operationId": "87312a78798c14bbb2bd82a3c4316c3c",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -42,6 +43,10 @@
                                         "token": {
                                             "type": "string",
                                             "example": "5|EtCJlDMEjmuP7VlQWRJt5iovPD8vxIMBr4BV3jJnb9a2a643"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged in successfully."
                                         }
                                     },
                                     "type": "object"
@@ -57,7 +62,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "User not found."
+                                            "example": "User not found or wrong password."
                                         }
                                     },
                                     "type": "object"
@@ -74,6 +79,7 @@
                     "Auth"
                 ],
                 "summary": "Logout",
+                "description": "Revokes the current access token of the authenticated user.",
                 "operationId": "5c426b1e5da3944c5594ba1ebde3f87b",
                 "responses": {
                     "200": {
@@ -85,6 +91,300 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Logged out successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/logout/other-devices": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout from other devices",
+                "description": "Revokes all access tokens except the current one. The current session remains active.",
+                "operationId": "8eefde6cf5ad9f26230cc9bb7d4cfb16",
+                "responses": {
+                    "200": {
+                        "description": "All sessions on other devices were closed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All sessions on other devices were closed successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/logout/device/{id}": {
+            "delete": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout specific device by token ID",
+                "description": "Revokes a personal access token by ID. Current active token cannot be deleted.",
+                "operationId": "d5a53dcbcd37d6887d76c3fe2edcdde3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Personal access token ID to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Token not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Cannot delete current token.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cannot delete current token."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Token could not be deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token could not be deleted."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tokens": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Tokens list",
+                "operationId": "19bbedcca0f46ce80566180c3b35f019",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of tokens per page (default: 15)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all user tokens.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "auth_token"
+                                                    },
+                                                    "tokenable_type": {
+                                                        "type": "string",
+                                                        "example": "App\\\\Models\\\\User"
+                                                    },
+                                                    "tokenable_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "abilities": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "*"
+                                                        }
+                                                    },
+                                                    "last_used_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    },
+                                                    "expires_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-27T17:50:45Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://localhost:8080/api/v1/tokens?page=2"
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -248,13 +548,13 @@
                 }
             }
         },
-        "/api/v1/change-password": {
+        "/api/v1/password/change": {
             "post": {
                 "tags": [
                     "Password"
                 ],
                 "summary": "Change password",
-                "operationId": "6686cdba781bb91b0b5ad30e8d758fc6",
+                "operationId": "1cdcc70365d2ce8f731d841c6eea420b",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -280,14 +580,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Change password and drop all sessions.",
+                        "description": "Password successfully changed and all sessions (except the current one) were closed.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Password changed successfully. All sessions was closed."
+                                            "example": "Password changed successfully. All sessions were closed."
                                         }
                                     },
                                     "type": "object"
@@ -296,14 +596,14 @@
                         }
                     },
                     "422": {
-                        "description": "Old and new passwords matched.",
+                        "description": "Old password and new password match.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Old and new passwords matched."
+                                            "example": "Old password and new password cannot be the same."
                                         }
                                     },
                                     "type": "object"
@@ -335,13 +635,13 @@
                 ]
             }
         },
-        "/api/v1/forgot-password": {
+        "/api/v1/password/forgot": {
             "post": {
                 "tags": [
                     "Password"
                 ],
-                "summary": "Create token and send mail to reset password",
-                "operationId": "552675e14da65d66551d55ea29926566",
+                "summary": "Generate reset token and send reset password email",
+                "operationId": "c00b53aae1c96f66171d5206b15e7a55",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -349,6 +649,7 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
+                                        "format": "email",
                                         "example": "some@email.ru"
                                     }
                                 },
@@ -359,7 +660,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Send reset password mail.",
+                        "description": "Password reset email sent successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -375,14 +676,14 @@
                         }
                     },
                     "422": {
-                        "description": "The selected email is invalid.",
+                        "description": "The email is invalid or not registered.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Invalid or expired token."
+                                            "example": "The selected email is invalid or not registered."
                                         }
                                     },
                                     "type": "object"
@@ -393,13 +694,13 @@
                 }
             }
         },
-        "/api/v1/reset-password": {
+        "/api/v1/password/reset": {
             "get": {
                 "tags": [
                     "Password"
                 ],
-                "summary": "Display reset password form",
-                "operationId": "86d122d3e92e7bb1370c438fab3edd78",
+                "summary": "Display password reset form with valid token",
+                "operationId": "2f5c6f91e7f06bdae5e64dbea9ad9f9a",
                 "parameters": [
                     {
                         "name": "email",
@@ -408,6 +709,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
+                            "format": "email",
                             "example": "user@example.com"
                         }
                     },
@@ -424,7 +726,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "The password reset form is successfully displayed",
+                        "description": "Password reset token and email are valid",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -444,7 +746,7 @@
                         }
                     },
                     "422": {
-                        "description": "Invalid or expired token",
+                        "description": "The provided token is invalid or has expired",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -465,8 +767,8 @@
                 "tags": [
                     "Password"
                 ],
-                "summary": "Reset password",
-                "operationId": "c5eaac378985e82be3b5429c3c8cac17",
+                "summary": "Reset the user's password",
+                "operationId": "5684e19b0dadd36faf3f46d7f50f654b",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -477,13 +779,16 @@
                                         "example": "some@email.ru"
                                     },
                                     "token": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "2bcc51a1eae1daef3b8390a2d9dd5ba00d0ffa8641ea671da4a274b8bac325"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "newPassword123"
                                     },
                                     "password_confirmation": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "newPassword123"
                                     }
                                 },
                                 "type": "object"
@@ -493,7 +798,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Send reset password mail.",
+                        "description": "Password has been successfully reset.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -509,13 +814,14 @@
                         }
                     },
                     "422": {
-                        "description": "The selected email is invalid.",
+                        "description": "The selected email is invalid or the password reset process failed.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "errors": {
-                                            "type": "object"
+                                            "type": "string",
+                                            "example": "The provided email is not registered."
                                         }
                                     },
                                     "type": "object"
@@ -542,296 +848,16 @@
                 }
             }
         },
-        "/api/v1/tokens": {
-            "post": {
-                "tags": [
-                    "Access token"
-                ],
-                "summary": "Tokens list",
-                "operationId": "77c56378571f203a07dd24d4a9e63ab5",
-                "responses": {
-                    "200": {
-                        "description": "All sessions on other devices were closed.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "auth_token"
-                                                    },
-                                                    "tokenable_type": {
-                                                        "type": "string",
-                                                        "example": "App\\\\Models\\\\User"
-                                                    },
-                                                    "tokenable_id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "abilities": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "string",
-                                                            "example": "*"
-                                                        }
-                                                    },
-                                                    "last_used_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    },
-                                                    "expires_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        },
-                                        "pagination": {
-                                            "properties": {
-                                                "total": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "example": 4
-                                                },
-                                                "next_page_url": {
-                                                    "type": "string",
-                                                    "example": "http://localhost:8080/api/v1/users?page=2"
-                                                },
-                                                "prev_page_url": {
-                                                    "type": "string",
-                                                    "example": null
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/logout-other-devices": {
-            "post": {
-                "tags": [
-                    "Access token"
-                ],
-                "summary": "Logout other devices",
-                "operationId": "ed57895451e44df6f53f56424c22ea66",
-                "responses": {
-                    "200": {
-                        "description": "All sessions on other devices were closed.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "All sessions on other devices were closed successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/logout-device": {
-            "delete": {
-                "tags": [
-                    "Access token"
-                ],
-                "summary": "Logout device by personal access token ID",
-                "operationId": "2f54558251fc8cae5d8e4b6cdbf591ea",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "description": "Personal access token ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Token deleted successfully.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Token deleted successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Token not found.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Token not found."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Cannot delete current token.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Cannot delete current token."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Token could not be deleted.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Token could not be deleted."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/enable2FA": {
+        "/api/v1/2fa/enable": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Enable Two Factor Authentification",
-                "operationId": "7bd80ed6177033e49597980f2f97037e",
+                "summary": "Enable Two Factor Authentication",
+                "operationId": "2842b222b9e3e07fb8ac7ca2edb25865",
                 "responses": {
                     "200": {
-                        "description": "Two Factor Authentification enabled successfully",
+                        "description": "Two Factor Authentication enabled successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -841,6 +867,7 @@
                                             "example": "DAQJRAKOTDG37DVU"
                                         },
                                         "two_factor_qr_code_base64": {
+                                            "description": "Base64 encoded QR code image for 2FA setup",
                                             "type": "string"
                                         }
                                     },
@@ -850,14 +877,30 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthenticated.",
+                        "description": "Unauthenticated. The user must be logged in to enable 2FA.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "errors": {
                                             "type": "string",
                                             "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Two Factor Authentication is already enabled.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "string",
+                                            "example": "Two Factor Authentication is already enabled."
                                         }
                                     },
                                     "type": "object"
@@ -873,20 +916,20 @@
                 ]
             }
         },
-        "/api/v1/verify2FA": {
+        "/api/v1/2fa/verify": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Verify Two Factor Authentification code",
-                "operationId": "6f7de91d180a3719b3b184ff79ddc9c5",
+                "summary": "Verify Two Factor Authentication",
+                "operationId": "7f688adf112e087a44ac35e243bd654c",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
                                     "two_factor_code": {
-                                        "type": "numeric",
+                                        "type": "string",
                                         "example": "123456"
                                     }
                                 },
@@ -897,14 +940,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Two Factor Authentification verified successfully.",
+                        "description": "Two Factor Authentication verified successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "2FA verified successfully."
+                                            "example": "Two factor authentication verified successfully."
                                         }
                                     },
                                     "type": "object"
@@ -913,14 +956,30 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthenticated.",
+                        "description": "Invalid or expired two-factor authentication code.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Unauthenticated."
+                                            "example": "Invalid or expired two-factor authentication code."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid input or missing parameters.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The provided two-factor authentication code is invalid."
                                         }
                                     },
                                     "type": "object"
@@ -1370,10 +1429,6 @@
         {
             "name": "Password",
             "description": "Password"
-        },
-        {
-            "name": "Access token",
-            "description": "Access token"
         },
         {
             "name": "User",

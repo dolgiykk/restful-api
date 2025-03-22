@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Services\UserService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -38,13 +37,7 @@ class UserController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        try {
-            $userResource = $this->userService->getOne($id);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
-        }
-
-        return response()->json($userResource, ResponseAlias::HTTP_OK);
+        return response()->json(...$this->userService->getOne($id));
     }
 
     /**
@@ -53,12 +46,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
-        $user = $this->userService->createUser($request->validated());
-
-        return response()->json([
-            'message' => __('actions.created_success'),
-            'user' => $user,
-        ], ResponseAlias::HTTP_CREATED);
+        return response()->json(...$this->userService->createUser($request->validated()));
     }
 
     /**
@@ -67,16 +55,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
-        try {
-            $user = $this->userService->updateUser($request->validated(), $id);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
-        }
-
-        return response()->json([
-            'message' => __('actions.updated_success'),
-            'user' => $user,
-        ], ResponseAlias::HTTP_OK);
+        return response()->json(...$this->userService->updateUser($request->validated(), $id));
     }
 
     /**
@@ -85,12 +64,6 @@ class UserController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        try {
-            $this->userService->deleteUser($id);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => $e->getMessage()], ResponseAlias::HTTP_NOT_FOUND);
-        }
-
-        return response()->json(['message' => __('actions.deleted_success')], ResponseAlias::HTTP_OK);
+        return response()->json(...$this->userService->deleteUser($id));
     }
 }

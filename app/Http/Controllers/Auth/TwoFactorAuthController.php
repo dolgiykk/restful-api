@@ -27,21 +27,21 @@ class TwoFactorAuthController extends Controller
      * @throws InvalidCharactersException
      * @throws SecretKeyTooShortException
      */
-    public function enable2FA(Request $request): JsonResponse
+    public function enable(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        return response()->json(...$this->twoFactorAuthService->enable2FA($user));
+        return response()->json(...$this->twoFactorAuthService->enable($user));
     }
 
     /**
      * @param Veryfi2FARequest $request
      * @return JsonResponse
      */
-    public function verify2FA(Veryfi2FARequest $request): JsonResponse
+    public function verify(Veryfi2FARequest $request): JsonResponse
     {
         $user = $request->user();
 
-        return response()->json(...$this->twoFactorAuthService->verify2FA($user, $request->validated()));
+        return response()->json(...$this->twoFactorAuthService->verify($user, $request->validated()));
     }
 }

@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Http\Resources\AddressResource;
 use App\Models\Address;
 use Illuminate\Contracts\Cache\LockTimeoutException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -86,7 +85,7 @@ class AddressService
                 'message'=> __('actions.created_success'),
                 'data'=> new AddressResource($address),
             ],
-            ResponseAlias::HTTP_OK,
+            ResponseAlias::HTTP_CREATED,
         ];
     }
 
@@ -137,7 +136,10 @@ class AddressService
         $address = Address::find($id);
 
         if (! $address) {
-            throw new ModelNotFoundException(__('address.not_found'));
+            return [
+                ['message'=> __('address.not_found')],
+                ResponseAlias::HTTP_NOT_FOUND,
+            ];
         }
 
         if (! $address->delete()) {

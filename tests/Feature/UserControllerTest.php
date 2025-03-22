@@ -59,7 +59,7 @@ class UserControllerTest extends TestCase
             ->assertJson(['message' => 'Created successfully.'])
             ->assertJsonStructure([
                 'message',
-                'user' => array_keys((new UserResource($user))->toArray(new Request())),
+                'data' => array_keys((new UserResource($user))->toArray(new Request())),
 
             ]);
 
@@ -198,7 +198,7 @@ class UserControllerTest extends TestCase
         $response->assertStatus(ResponseAlias::HTTP_OK)
             ->assertJsonStructure([
                 'message',
-                'user' => array_keys((new UserResource($user))->toArray(new Request())),
+                'data' => array_keys((new UserResource($user))->toArray(new Request())),
 
             ])
             ->assertJsonFragment([

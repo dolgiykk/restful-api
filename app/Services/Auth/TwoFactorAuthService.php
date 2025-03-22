@@ -19,7 +19,7 @@ class TwoFactorAuthService
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
      */
-    public function enable2FA(?User $user):array
+    public function enable(?User $user):array
     {
         if ($checkAuth = $this->ensureAuthenticated($user)) {
             return $checkAuth;
@@ -66,7 +66,7 @@ class TwoFactorAuthService
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
      */
-    public function verify2FA(?User $user, array $data):array
+    public function verify(?User $user, array $data):array
     {
         if ($checkAuth = $this->ensureAuthenticated($user)) {
             return $checkAuth;

@@ -9,96 +9,81 @@ class TwoFactorAuthController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/api/v1/enable2FA",
-     *      summary="Enable Two Factor Authentification",
+     *      path="/api/v1/2fa/enable",
+     *      summary="Enable Two Factor Authentication",
      *      tags={"Auth"},
      *      security={{"bearerAuth":{}}},
      *
      *      @OA\Response(
      *          response=200,
-     *          description="Two Factor Authentification enabled successfully",
+     *          description="Two Factor Authentication enabled successfully",
      *          @OA\JsonContent(
      *              @OA\Property(property="two_factor_secret", type="string", example="DAQJRAKOTDG37DVU"),
-     *              @OA\Property(property="two_factor_qr_code_base64", type="string")
+     *              @OA\Property(property="two_factor_qr_code_base64", type="string", description="Base64 encoded QR code image for 2FA setup")
      *          )
      *      ),
      *
      *      @OA\Response(
      *           response=401,
-     *           description="Unauthenticated.",
+     *           description="Unauthenticated. The user must be logged in to enable 2FA.",
      *           @OA\JsonContent(
-     *               @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *               @OA\Property(property="errors", type="string", example="Unauthenticated.")
+     *           )
+     *      ),
+     *
+     *      @OA\Response(
+     *           response=400,
+     *           description="Two Factor Authentication is already enabled.",
+     *           @OA\JsonContent(
+     *               @OA\Property(property="errors", type="string", example="Two Factor Authentication is already enabled.")
      *           )
      *      )
      *  )
      */
-    public function enable2FA(Request $request)
+    public function enable(Request $request)
     {
     }
 
     /**
      * @OA\Post(
-     *       path="/api/v1/verify2FA",
-     *       summary="Verify Two Factor Authentification code",
-     *       tags={"Auth"},
-     *       security={{"bearerAuth":{}}},
+     *      path="/api/v1/2fa/verify",
+     *      summary="Verify Two Factor Authentication",
+     *      tags={"Auth"},
+     *      security={{"bearerAuth":{}}},
      *
-     *       @OA\RequestBody(
-     *            @OA\JsonContent(
-     *                type="object",
-     *                @OA\Property(property="two_factor_code", type="numeric", example="123456"),
-     *            )
-     *       ),
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="two_factor_code", type="string", example="123456")
+     *          )
+     *      ),
      *
-     *       @OA\Response(
-     *            response=200,
-     *            description="Two Factor Authentification verified successfully.",
-     *            @OA\JsonContent(
-     *                @OA\Property(property="message", type="string", example="2FA verified successfully."),
-     *            )
-     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Two Factor Authentication verified successfully.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Two factor authentication verified successfully.")
+     *          )
+     *      ),
      *
-     *       @OA\Response(
-     *             response=401,
-     *             description="Unauthenticated.",
-     *             @OA\JsonContent(
-     *                 @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *             )
-     *       ),
-     *   )
+     *      @OA\Response(
+     *          response=401,
+     *          description="Invalid or expired two-factor authentication code.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Invalid or expired two-factor authentication code.")
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=422,
+     *          description="Invalid input or missing parameters.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="The provided two-factor authentication code is invalid.")
+     *          )
+     *      )
+     *  )
      */
-    public function verify2FA(Request $request)
+    public function verify(Request $request)
     {
     }
-
-    /**
-     * @OA\Post(
-     *        path="/api/v1/forgot-password",
-     *        summary="Create token and send mail to reset password",
-     *        tags={"Auth"},
-     *
-     *        @OA\RequestBody(
-     *             @OA\JsonContent(
-     *                 type="object",
-     *                 @OA\Property(property="email", type="string", example="some@email.ru"),
-     *             )
-     *        ),
-     *
-     *        @OA\Response(
-     *             response=200,
-     *             description="Send reset password mail.",
-     *             @OA\JsonContent(
-     *                 @OA\Property(property="message", type="string", example="We have emailed your password reset link."),
-     *             )
-     *        ),
-     *
-     *        @OA\Response(
-     *              response=422,
-     *              description="The selected email is invalid.",
-     *              @OA\JsonContent(
-     *                  @OA\Property(property="message", type="string", example="Invalid or expired token.")
-     *              )
-     *        ),
-     *    )
-     */
 }

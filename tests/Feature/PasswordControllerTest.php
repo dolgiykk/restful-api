@@ -21,7 +21,7 @@ class PasswordControllerTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'test@test.com']);
 
-        $response = $this->postJson('/api/v1/forgot-password', ['email' => 'test@test.com']);
+        $response = $this->postJson('/api/v1/password/forgot', ['email' => 'test@test.com']);
 
         $response->assertStatus(200);
     }
@@ -31,7 +31,7 @@ class PasswordControllerTest extends TestCase
      */
     public function test_send_reset_token_with_nonexistent_email(): void
     {
-        $response = $this->postJson('/api/v1/forgot-password', ['email' => 'test@test.com']);
+        $response = $this->postJson('/api/v1/password/forgot', ['email' => 'test@test.com']);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
@@ -46,7 +46,7 @@ class PasswordControllerTest extends TestCase
 
         $user = User::factory()->create(['email' => 'test@test.com']);
 
-        $this->postJson('/api/v1/forgot-password', ['email' => 'test@test.com']);
+        $this->postJson('/api/v1/password/forgot', ['email' => 'test@test.com']);
 
         Notification::assertSentTo([$user], ResetPassword::class);
     }
@@ -63,7 +63,7 @@ class PasswordControllerTest extends TestCase
             'created_at' => now(),
         ]);
 
-        $response = $this->getJson('/api/v1/reset-password?email=test@test.com&token='.$token);
+        $response = $this->getJson('/api/v1/password/reset-form?email=test@test.com&token='.$token);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -85,7 +85,7 @@ class PasswordControllerTest extends TestCase
             'created_at' => now(),
         ]);
 
-        $response = $this->getJson('/api/v1/reset-password?email=test@test.com&token=wrong-token');
+        $response = $this->getJson('/api/v1/password/reset-form?email=test@test.com&token=wrong-token');
 
         $response->assertStatus(422)
             ->assertJson(['errors' => 'Invalid or expired token.']);
@@ -96,7 +96,7 @@ class PasswordControllerTest extends TestCase
      */
     public function test_reset_password_form_with_nonexistent_email(): void
     {
-        $response = $this->getJson('/api/v1/reset-password?email=nonexistent@test.com&token=some-token');
+        $response = $this->getJson('/api/v1/password/reset-form?email=nonexistent@test.com&token=some-token');
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
@@ -107,7 +107,7 @@ class PasswordControllerTest extends TestCase
      */
     public function test_reset_password_form_without_token(): void
     {
-        $response = $this->getJson('/api/v1/reset-password?email=test@test.com');
+        $response = $this->getJson('/api/v1/password/reset-form?email=test@test.com');
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['token']);
@@ -118,7 +118,7 @@ class PasswordControllerTest extends TestCase
      */
     public function test_reset_password_form_without_email(): void
     {
-        $response = $this->getJson('/api/v1/reset-password?token=some-token');
+        $response = $this->getJson('/api/v1/password/reset-form?token=some-token');
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
@@ -144,7 +144,7 @@ class PasswordControllerTest extends TestCase
             'new_password_confirmation' => 'new_password123',
         ];
 
-        $response = $this->postJson('/api/v1/change-password', $payload);
+        $response = $this->postJson('/api/v1/password/change', $payload);
 
         $response->assertStatus(200)
             ->assertJson(['message' => 'Password changed successfully. All sessions were closed.']);
@@ -170,7 +170,7 @@ class PasswordControllerTest extends TestCase
             'new_password_confirmation' => 'new_password123',
         ];
 
-        $response = $this->postJson('/api/v1/change-password', $payload);
+        $response = $this->postJson('/api/v1/password/change', $payload);
 
         $response->assertStatus(401)
             ->assertJson(['message' => 'Wrong password.']);
@@ -196,7 +196,7 @@ class PasswordControllerTest extends TestCase
             'new_password_confirmation' => 'password123',
         ];
 
-        $response = $this->postJson('/api/v1/change-password', $payload);
+        $response = $this->postJson('/api/v1/password/change', $payload);
 
         $response->assertStatus(422)
             ->assertJson(['message' => 'Old and new passwords matched.']);
@@ -222,7 +222,7 @@ class PasswordControllerTest extends TestCase
             'new_password_confirmation' => 'different_new_password123',
         ];
 
-        $response = $this->postJson('/api/v1/change-password', $payload);
+        $response = $this->postJson('/api/v1/password/change', $payload);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['new_password']);

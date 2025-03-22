@@ -4,10 +4,11 @@ namespace App\Services;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserService
 {
@@ -45,70 +46,106 @@ class UserService
 
     /**
      * @param int $id
-     * @return mixed
+     * @return array<mixed>
      */
     public function getOne(int $id): mixed
     {
-        $cacheKey = "user:{$id}";
-
-        return Cache::rememberForever($cacheKey, function () use ($id) {
+        /** @var array<mixed> */
+        return Cache::rememberForever("user:{$id}", function () use ($id) {
             $user = User::find($id);
 
             if (! $user) {
-                throw new ModelNotFoundException('User not found.');
+                return [
+                    ['message'=> __('user.not_found')],
+                    ResponseAlias::HTTP_NOT_FOUND,
+                ];
             }
 
-            return new UserResource($user);
+            return [
+                ['data'=> new UserResource($user)],
+                ResponseAlias::HTTP_OK,
+            ];
         });
     }
 
     /**
      * @param array<string, mixed> $data
-     * @return UserResource
+     * @return array<mixed>
      */
-    public function createUser(array $data): UserResource
+    public function createUser(array $data): array
     {
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
 
         Cache::tags(['users_list'])->flush();
 
-        return new UserResource($user);
+        return [
+            [
+                'message'=> __('actions.created_success'),
+                'data'=> new UserResource($user),
+            ],
+            ResponseAlias::HTTP_CREATED,
+        ];
     }
 
     /**
      * @param array<string, mixed> $data
      * @param int $id
-     * @return UserResource
+     * @return array<mixed>
      */
-    public function updateUser(array $data, int $id): UserResource
+    public function updateUser(array $data, int $id): array
     {
         $user = User::find($id);
 
         if (! $user) {
-            throw new ModelNotFoundException(__('user.not_found'));
+            return [
+                ['message'=> __('user.not_found')],
+                ResponseAlias::HTTP_NOT_FOUND,
+            ];
         }
 
-        $user->update($data);
+        if (! $user->update($data)) {
+            return [
+                ['message'=> __('actions.update_failed')],
+                ResponseAlias::HTTP_SERVICE_UNAVAILABLE,
+            ];
+        }
 
         Cache::lock('cache_update_lock', 10)->block(0, function () use ($id) {
             Cache::tags(['users_list'])->flush();
             Cache::forget("user:{$id}");
         });
 
-        return new UserResource($user);
+        return [
+            [
+                'message'=> __('actions.updated_success'),
+                'data'=> new UserResource($user),
+            ],
+            ResponseAlias::HTTP_OK,
+        ];
     }
 
     /**
      * @param int $id
-     * @return bool|null
+     * @return array<mixed>
+     * @throws LockTimeoutException
      */
-    public function deleteUser(int $id): bool|null
+    public function deleteUser(int $id): array
     {
         $user = User::find($id);
 
         if (! $user) {
-            throw new ModelNotFoundException(__('user.not_found'));
+            return [
+                ['message'=> __('user.not_found')],
+                ResponseAlias::HTTP_NOT_FOUND,
+            ];
+        }
+
+        if (! $user->delete()) {
+            return [
+                ['message'=> __('actions.delete_failed')],
+                ResponseAlias::HTTP_SERVICE_UNAVAILABLE,
+            ];
         }
 
         Cache::lock('cache_update_lock', 10)->block(0, function () use ($id) {
@@ -116,6 +153,9 @@ class UserService
             Cache::forget("user:{$id}");
         });
 
-        return $user->delete();
+        return [
+            ['message'=> __('actions.deleted_success')],
+            ResponseAlias::HTTP_OK,
+        ];
     }
 }
