@@ -11,7 +11,7 @@ parameters:
     level: 9
 
     excludePaths:
-        - app/Http/Controllers/Swagger/*
+        - app/Swagger/*
 
     ignoreErrors:
         - '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash:\:make\(\) expects string, mixed given.#'

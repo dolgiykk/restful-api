@@ -6,7 +6,6 @@ use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin Address */
 class AddressResource extends JsonResource
 {
     /**
@@ -33,6 +32,7 @@ class AddressResource extends JsonResource
             'flat' => $this->address->flat,
             'created_at' => $this->address->created_at,
             'updated_at' => $this->address->updated_at,
+            'link' => route('addresses.show.show', ['address' => $this->address->id]),
         ];
     }
 }

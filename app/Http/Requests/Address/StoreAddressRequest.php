@@ -17,7 +17,7 @@ class StoreAddressRequest extends Request
         return [
             'country' => 'string|required',
             'subject' => 'string|nullable',
-            'city' => 'string',
+            'city' => 'string|required',
             'street' => 'string|required',
             'house' => 'string|required',
             'flat' => 'integer|nullable',

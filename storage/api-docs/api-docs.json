@@ -6,13 +6,330 @@
     },
     "paths": {
         "/api/v1/": {},
+        "/api/v1/addresses": {
+            "get": {
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Addresses list",
+                "operationId": "a9af9820257150bfb712d6851649fe72",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Count of addresses per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AddressResource"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "$ref": "#/components/schemas/Pagination"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Create address",
+                "operationId": "f10f32387b2ddc7915e53ecc6ccb7057",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "country",
+                                    "city",
+                                    "street",
+                                    "house"
+                                ],
+                                "properties": {
+                                    "country": {
+                                        "type": "string",
+                                        "example": "Russia"
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Tver oblast"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Kalyazin"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "example": "Kominterna"
+                                    },
+                                    "house": {
+                                        "type": "string",
+                                        "example": "105/2"
+                                    },
+                                    "flat": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Address created successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Update address",
+                "operationId": "76899dc00e38f1bdf3e1b605987b0cc8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Address ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "country": {
+                                        "type": "string",
+                                        "example": "Russia"
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Tver oblast"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Kalyazin"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "example": "Kominterna"
+                                    },
+                                    "house": {
+                                        "type": "string",
+                                        "example": "105/2"
+                                    },
+                                    "flat": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Address created successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Address not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Address not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/addresses/{id}": {
+            "get": {
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Get address by ID",
+                "operationId": "7c9c5679531c1f3dea1805a3edc7a0c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Address ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "country": {
+                                            "type": "string",
+                                            "example": "Russia"
+                                        },
+                                        "subject": {
+                                            "type": "string",
+                                            "example": "Tver oblast"
+                                        },
+                                        "city": {
+                                            "type": "string",
+                                            "example": "Kalyazin"
+                                        },
+                                        "street": {
+                                            "type": "string",
+                                            "example": "Kominterna"
+                                        },
+                                        "house": {
+                                            "type": "string",
+                                            "example": "105/2"
+                                        },
+                                        "flat": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2020-01-27T17:50:45Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2020-01-27T17:50:45Z"
+                                        },
+                                        "link": {
+                                            "type": "string",
+                                            "example": "http://localhost:8080/api/v1/addresses/1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Address not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Address not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/login": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Login via login",
-                "operationId": "87312a78798c14bbb2bd82a3c4316c3c",
+                "operationId": "f415f2f569a1b948d858db965ad54a5c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -80,7 +397,7 @@
                 ],
                 "summary": "Logout",
                 "description": "Revokes the current access token of the authenticated user.",
-                "operationId": "5c426b1e5da3944c5594ba1ebde3f87b",
+                "operationId": "b13cd0a05d46af048cf69f34cc32dbc7",
                 "responses": {
                     "200": {
                         "description": "Logged out successfully.",
@@ -129,7 +446,7 @@
                 ],
                 "summary": "Logout from other devices",
                 "description": "Revokes all access tokens except the current one. The current session remains active.",
-                "operationId": "8eefde6cf5ad9f26230cc9bb7d4cfb16",
+                "operationId": "38e796aa15d7aef6014e11b951e62762",
                 "responses": {
                     "200": {
                         "description": "All sessions on other devices were closed successfully.",
@@ -178,7 +495,7 @@
                 ],
                 "summary": "Logout specific device by token ID",
                 "description": "Revokes a personal access token by ID. Current active token cannot be deleted.",
-                "operationId": "d5a53dcbcd37d6887d76c3fe2edcdde3",
+                "operationId": "353d73150d41d4ad7fc7ecdbd385b785",
                 "parameters": [
                     {
                         "name": "id",
@@ -286,7 +603,7 @@
                     "Auth"
                 ],
                 "summary": "Tokens list",
-                "operationId": "19bbedcca0f46ce80566180c3b35f019",
+                "operationId": "1a1468538a0d094b61a872a0bed0c377",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -423,7 +740,7 @@
                 ],
                 "summary": "Send Verification Email",
                 "description": "Send an email verification link to the authenticated user.",
-                "operationId": "d920bb96b50bd5c8381172d4333cc299",
+                "operationId": "ad72d0cabc4fb1fefa6f482392cf17a6",
                 "responses": {
                     "202": {
                         "description": "Verification email sent.",
@@ -488,7 +805,7 @@
                 ],
                 "summary": "Verify Email",
                 "description": "Verify the user's email using the link from the verification email.",
-                "operationId": "96e06c52354cf9dbed1acf31ff31e1ec",
+                "operationId": "7a84a2f9a6d927419527d048fb7394e4",
                 "parameters": [
                     {
                         "name": "id",
@@ -554,7 +871,7 @@
                     "Password"
                 ],
                 "summary": "Change password",
-                "operationId": "1cdcc70365d2ce8f731d841c6eea420b",
+                "operationId": "17b95c3cc613fb3c094cf310a03c0989",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -641,7 +958,7 @@
                     "Password"
                 ],
                 "summary": "Generate reset token and send reset password email",
-                "operationId": "c00b53aae1c96f66171d5206b15e7a55",
+                "operationId": "f10fb5576d4f440f0fbc0744758ae86d",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -700,7 +1017,7 @@
                     "Password"
                 ],
                 "summary": "Display password reset form with valid token",
-                "operationId": "2f5c6f91e7f06bdae5e64dbea9ad9f9a",
+                "operationId": "be82b4fef2afd2fb8e522c13ff3ce64f",
                 "parameters": [
                     {
                         "name": "email",
@@ -768,7 +1085,7 @@
                     "Password"
                 ],
                 "summary": "Reset the user's password",
-                "operationId": "5684e19b0dadd36faf3f46d7f50f654b",
+                "operationId": "bf5c8afcd4f9b0a9246d8fcaae2700b8",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -854,7 +1171,7 @@
                     "Auth"
                 ],
                 "summary": "Enable Two Factor Authentication",
-                "operationId": "2842b222b9e3e07fb8ac7ca2edb25865",
+                "operationId": "880dd095d0f97ddf341a3a6c56919f2c",
                 "responses": {
                     "200": {
                         "description": "Two Factor Authentication enabled successfully",
@@ -922,7 +1239,7 @@
                     "Auth"
                 ],
                 "summary": "Verify Two Factor Authentication",
-                "operationId": "7f688adf112e087a44ac35e243bd654c",
+                "operationId": "6fd305e71d5d160387f2574666f26078",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1001,7 +1318,7 @@
                     "User"
                 ],
                 "summary": "Users list",
-                "operationId": "ed60fd9c0d82f219cb715b272953056b",
+                "operationId": "375960e9323b228c1ac62419d6ae84d5",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -1034,87 +1351,11 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "login": {
-                                                        "type": "string",
-                                                        "example": "login"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "test@test.com"
-                                                    },
-                                                    "email_verified_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2020-01-27T17:50:45Z"
-                                                    },
-                                                    "first_name": {
-                                                        "type": "string",
-                                                        "example": "John"
-                                                    },
-                                                    "last_name": {
-                                                        "type": "string",
-                                                        "example": "Doe"
-                                                    },
-                                                    "second_name": {
-                                                        "type": "string",
-                                                        "example": "Smith"
-                                                    },
-                                                    "birthday": {
-                                                        "type": "string",
-                                                        "format": "date",
-                                                        "example": "1995-05-16"
-                                                    },
-                                                    "sex": {
-                                                        "type": "string",
-                                                        "example": "male"
-                                                    }
-                                                },
-                                                "type": "object"
+                                                "$ref": "#/components/schemas/UserResource"
                                             }
                                         },
                                         "pagination": {
-                                            "properties": {
-                                                "total": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "example": 4
-                                                },
-                                                "next_page_url": {
-                                                    "type": "string",
-                                                    "example": "http://localhost:8080/api/v1/users?page=2"
-                                                },
-                                                "prev_page_url": {
-                                                    "type": "string",
-                                                    "example": null
-                                                }
-                                            },
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/Pagination"
                                         }
                                     },
                                     "type": "object"
@@ -1129,11 +1370,16 @@
                     "User"
                 ],
                 "summary": "Create user",
-                "operationId": "15bca0772c6c5b926d69e14ac1b1d3db",
+                "operationId": "b3589abb3321d13b67c7f2daf7be081c",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "login",
+                                    "email",
+                                    "password"
+                                ],
                                 "properties": {
                                     "login": {
                                         "type": "string",
@@ -1193,7 +1439,7 @@
                     "User"
                 ],
                 "summary": "Update user",
-                "operationId": "5452b165d47d655136c267bfa873fb4c",
+                "operationId": "c4152b07f12a44e838e52a0cf82ec0d8",
                 "parameters": [
                     {
                         "name": "id",
@@ -1210,57 +1456,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "login": {
-                                        "type": "string",
-                                        "example": "login"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "test@test.com"
-                                    },
-                                    "email_verified_at": {
-                                        "type": "string",
-                                        "format": "date-time",
-                                        "example": "2020-01-27T17:50:45Z"
-                                    },
-                                    "created_at": {
-                                        "type": "string",
-                                        "format": "date-time",
-                                        "example": "2020-01-27T17:50:45Z"
-                                    },
-                                    "updated_at": {
-                                        "type": "string",
-                                        "format": "date-time",
-                                        "example": "2020-01-27T17:50:45Z"
-                                    },
-                                    "first_name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
-                                        "example": "Doe"
-                                    },
-                                    "second_name": {
-                                        "type": "string",
-                                        "example": "Smith"
-                                    },
-                                    "birthday": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "1995-05-16"
-                                    },
-                                    "sex": {
-                                        "type": "string",
-                                        "example": "male"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserResource"
                             }
                         }
                     }
@@ -1323,7 +1519,7 @@
                     "User"
                 ],
                 "summary": "Get user by ID",
-                "operationId": "6c5901986c1d443d574ecc1b8b0c00a6",
+                "operationId": "cb187fbf7bc573d96843b931b84af2c0",
                 "parameters": [
                     {
                         "name": "id",
@@ -1342,57 +1538,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "login": {
-                                            "type": "string",
-                                            "example": "login"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "test@test.com"
-                                        },
-                                        "email_verified_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2020-01-27T17:50:45Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2020-01-27T17:50:45Z"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2020-01-27T17:50:45Z"
-                                        },
-                                        "first_name": {
-                                            "type": "string",
-                                            "example": "John"
-                                        },
-                                        "last_name": {
-                                            "type": "string",
-                                            "example": "Doe"
-                                        },
-                                        "second_name": {
-                                            "type": "string",
-                                            "example": "Smith"
-                                        },
-                                        "birthday": {
-                                            "type": "string",
-                                            "format": "date",
-                                            "example": "1995-05-16"
-                                        },
-                                        "sex": {
-                                            "type": "string",
-                                            "example": "male"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/UserResource"
                                 }
                             }
                         }
@@ -1414,10 +1560,228 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user",
+                "operationId": "dead3a5fd8e42236b9a714d52843bfd6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id for delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User successfully deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Failed to delete user.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to delete user."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Pagination": {
+                "properties": {
+                    "per_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "current_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "next_page_url": {
+                        "type": "string",
+                        "example": "http://localhost:8080/api/v1/****?page=2"
+                    },
+                    "prev_page_url": {
+                        "type": "string",
+                        "example": null
+                    }
+                },
+                "type": "object"
+            },
+            "AddressResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Russia"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "example": "Tver oblast"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Kalyazin"
+                    },
+                    "street": {
+                        "type": "string",
+                        "example": "Kominterna"
+                    },
+                    "house": {
+                        "type": "string",
+                        "example": "105/2"
+                    },
+                    "flat": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-01-27T17:50:45Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-01-27T17:50:45Z"
+                    },
+                    "link": {
+                        "type": "string",
+                        "readOnly": true,
+                        "example": "http://localhost:8080/api/v1/addresses/1"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "login": {
+                        "type": "string",
+                        "example": "login"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "test@test.com"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-01-27T17:50:45Z"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-01-27T17:50:45Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-01-27T17:50:45Z"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "second_name": {
+                        "type": "string",
+                        "example": "Smith"
+                    },
+                    "birthday": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1995-05-16"
+                    },
+                    "sex": {
+                        "type": "string",
+                        "example": "male"
+                    },
+                    "link": {
+                        "type": "string",
+                        "readOnly": true,
+                        "example": "http://localhost:8080/api/v1/users/1"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Enter token as: Bearer {your-token}"
             }
         }
     },
     "tags": [
+        {
+            "name": "Address",
+            "description": "Address"
+        },
         {
             "name": "Auth",
             "description": "Auth"
@@ -1434,15 +1798,5 @@
             "name": "User",
             "description": "User"
         }
-    ],
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                "description": "Enter token as: Bearer {your-token}"
-            }
-        }
-    }
+    ]
 }

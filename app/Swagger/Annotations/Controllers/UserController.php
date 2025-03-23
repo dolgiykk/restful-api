@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Swagger;
+namespace App\Swagger\Annotations\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -32,26 +32,8 @@ class UserController extends Controller
      *          response=200,
      *          description="OK",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array", @OA\Items(
-     *                  @OA\Property(property="id", type="integer", example=1),
-     *                  @OA\Property(property="login", type="string", example="login"),
-     *                  @OA\Property(property="email", type="string", example="test@test.com"),
-     *                  @OA\Property(property="email_verified_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *                  @OA\Property(property="created_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *                  @OA\Property(property="updated_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *                  @OA\Property(property="first_name", type="string", example="John"),
-     *                  @OA\Property(property="last_name", type="string", example="Doe"),
-     *                  @OA\Property(property="second_name", type="string", example="Smith"),
-     *                  @OA\Property(property="birthday", type="string", format="date", example="1995-05-16"),
-     *                  @OA\Property(property="sex", type="string", example="male")
-     *              )),
-     *              @OA\Property(property="pagination", type="object", @OA\Property(property="total", type="integer", example=1),
-     *                  @OA\Property(property="per_page", type="integer", example=10),
-     *                  @OA\Property(property="current_page", type="integer", example=10),
-     *                  @OA\Property(property="last_page", type="integer", example=4),
-     *                  @OA\Property(property="next_page_url", type="string", example="http://localhost:8080/api/v1/users?page=2"),
-     *                  @OA\Property(property="prev_page_url", type="string", example=null)
-     *              )
+     *              @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/UserResource")),
+     *              @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
      *          )
      *      )
      *  )
@@ -77,19 +59,7 @@ class UserController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="User found",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="integer", example=1),
-     *              @OA\Property(property="login", type="string", example="login"),
-     *              @OA\Property(property="email", type="string", example="test@test.com"),
-     *              @OA\Property(property="email_verified_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *              @OA\Property(property="created_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *              @OA\Property(property="updated_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *              @OA\Property(property="first_name", type="string", example="John"),
-     *              @OA\Property(property="last_name", type="string", example="Doe"),
-     *              @OA\Property(property="second_name", type="string", example="Smith"),
-     *              @OA\Property(property="birthday", type="string", format="date", example="1995-05-16"),
-     *              @OA\Property(property="sex", type="string", example="male")
-     *          )
+     *          @OA\JsonContent(ref="#/components/schemas/UserResource")
      *      ),
      *
      *      @OA\Response(
@@ -114,6 +84,7 @@ class UserController extends Controller
      *      @OA\RequestBody(
      *          @OA\JsonContent(
      *              type="object",
+     *              required={"login", "email", "password"},
      *              @OA\Property(property="login", type="string", example="SomeName"),
      *              @OA\Property(property="email", type="string", example="some@email.ru"),
      *              @OA\Property(property="password", type="string", example="password123"),
@@ -156,20 +127,7 @@ class UserController extends Controller
      *       ),
      *
      *      @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(property="id", type="integer", example=1),
-     *              @OA\Property(property="login", type="string", example="login"),
-     *              @OA\Property(property="email", type="string", example="test@test.com"),
-     *              @OA\Property(property="email_verified_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *              @OA\Property(property="created_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *              @OA\Property(property="updated_at", type="string", format="date-time", example="2020-01-27T17:50:45Z"),
-     *              @OA\Property(property="first_name", type="string", example="John"),
-     *              @OA\Property(property="last_name", type="string", example="Doe"),
-     *              @OA\Property(property="second_name", type="string", example="Smith"),
-     *              @OA\Property(property="birthday", type="string", format="date", example="1995-05-16"),
-     *              @OA\Property(property="sex", type="string", example="male"),
-     *          )
+     *           @OA\JsonContent(ref="#/components/schemas/UserResource")
      *      ),
      *
      *      @OA\Response(
@@ -198,6 +156,45 @@ class UserController extends Controller
      *  )
      */
     public function update(Request $request)
+    {
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/users/{id}",
+     *     summary="Delete user",
+     *     tags={"User"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="User id for delete",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User successfully deleted.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User deleted successfully.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=503,
+     *         description="Failed to delete user.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Failed to delete user.")
+     *         )
+     *     )
+     * )
+     */
+    public function destroy(int $id)
     {
     }
 }

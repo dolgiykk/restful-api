@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Swagger\Auth;
+namespace App\Swagger\Annotations\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
